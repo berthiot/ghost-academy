@@ -19,6 +19,10 @@ const GHOST_CONFIG = {
   // 2. Developers → API Keys → Publishable key
   stripe: {
     publicKey: 'pk_live_51PQmEOK8S2adJvU9lFXcPdRDa2PoQxaI9K5hZFyY9orOkgts6QXpRMxHU1EoabcHdmQ9NiJVUOdxvPumueI0UhV600HqaMPdkg',
+    // Endpoint backend qui crée le PaymentIntent / abonnement.
+    // Laisse vide ('') pour utiliser la simulation de démo (GitHub Pages).
+    // Exemple : '/api/checkout' (Netlify Functions, Vercel, etc.)
+    checkoutUrl: '',
     // Plans disponibles (crée-les dans Stripe Dashboard → Products)
     plans: [
       {

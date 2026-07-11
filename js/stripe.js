@@ -90,15 +90,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (error) throw new Error(error.message);
 
-      // TODO: Envoie paymentMethod.id + selectedPlan.priceId à ton backend
-      // Exemple avec un endpoint serverless (Netlify Functions, Vercel, etc.)
-      // const res = await fetch('/api/checkout', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ paymentMethodId: paymentMethod.id, priceId: selectedPlan.priceId, email })
-      // });
+      // Envoie paymentMethod.id + selectedPlan.priceId au backend si configuré.
+      // Sinon, on simule le succès pour la démo (GitHub Pages).
+      const checkoutUrl = GHOST_CONFIG.stripe.checkoutUrl;
+      if (checkoutUrl) {
+        const res = await fetch(checkoutUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            paymentMethodId: paymentMethod.id,
+            priceId: selectedPlan.priceId,
+            email
+          })
+        });
 
-      // Simulation succès (remplace par la vraie réponse backend)
+        let data = {};
+        try { data = await res.json(); } catch { /* réponse non-JSON */ }
+
+        if (!res.ok || data.error) {
+          throw new Error(data.error || `Erreur backend (${res.status})`);
+        }
+
+        // Gère une éventuelle authentification 3D Secure renvoyée par le backend.
+        if (data.requiresAction && data.clientSecret) {
+          const { error: confirmError } = await stripe.confirmCardPayment(data.clientSecret);
+          if (confirmError) throw new Error(confirmError.message);
+        }
+      }
+
+      // Enregistre l'accès (issu du backend en production, simulé pour la démo).
       localStorage.setItem('ga_access', JSON.stringify({
         plan: selectedPlan.id,
         email,
