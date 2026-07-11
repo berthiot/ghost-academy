@@ -173,6 +173,165 @@ html,body { height:100%; overflow:hidden; }
   <!-- SCROLL AREA -->
   <div class="scroll-area" id="scrollArea">
 
+    <!-- MODULE 00 — INTRO (GRATUIT) -->
+    <div class="page" id="page-intro">
+      <div class="mod-hdr" style="background:linear-gradient(180deg,rgba(0,229,255,.05) 0%,transparent 100%);">
+        <div class="mod-tag">// MODULE 00 — GRATUIT</div>
+        <div class="mod-title">INTRODUCTION</div>
+        <div class="mod-desc">Mindset hacker, environnement Kali, ressources CTF. Le point de départ de tout.</div>
+        <div class="pills"><span class="pill pill-cyan">GRATUIT</span><span class="pill pill-cyan">DÉBUTANT</span></div>
+      </div>
+      <div class="seg-tabs">
+        <button class="seg-tab active" onclick="segTab(this,'intro','theory')">⚡ THÉORIE</button>
+        <button class="seg-tab" onclick="segTab(this,'intro','quiz')">🎯 QUIZ</button>
+        <button class="seg-tab" onclick="segTab(this,'intro','lab')">💻 LAB</button>
+      </div>
+      <div id="intro-theory">
+        <div class="card"><div class="card-head">🎯 QU'EST-CE QUE LE HACKING ÉTHIQUE ?</div><div class="card-body">
+          <p>Un <strong style="color:var(--cyan)">hacker éthique</strong> (ou pentesteur) est mandaté par une organisation pour tester ses défenses. La seule différence avec un attaquant malveillant : <strong style="color:var(--cyan)">l'autorisation écrite</strong>.</p>
+          <p>Sans autorisation écrite → crime. Avec → profession reconnue et bien payée (70–130k€/an).</p>
+          <div class="note-box">⚡ Ne pratique JAMAIS sur des systèmes que tu ne possèdes pas ou pour lesquels tu n'as pas d'autorisation explicite.</div>
+        </div></div>
+        <div class="card"><div class="card-head">🐧 INSTALLER KALI LINUX</div><div class="card-body">
+          <p>Kali Linux = distribution Debian pré-chargée avec +600 outils de sécurité. Option recommandée : VM VirtualBox.</p>
+          <div class="cmd-block" onclick="runCmd('uname -a','intro')">uname -a<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('whoami','intro')">whoami<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('ls /usr/bin | grep -c .','intro')">ls /usr/bin | grep -c .<span class="run-lbl">▶ RUN</span></div>
+          <div class="note-box">⚡ Alternatives : Parrot OS (plus léger), WSL2 sur Windows, ou VPS en ligne.</div>
+        </div></div>
+        <div class="card"><div class="card-head">🌐 RESSOURCES ESSENTIELLES</div><div class="card-body">
+          <p><strong style="color:var(--cyan)">Pratique :</strong> TryHackMe (débutant) → HackTheBox (intermédiaire) → CTF compétitions</p>
+          <p><strong style="color:var(--cyan)">Références :</strong> GTFOBins · HackTricks · OWASP · ExploitDB · CVEdetails</p>
+          <p><strong style="color:var(--cyan)">Communautés :</strong> r/netsec · Discord HTB · Twitter #infosec</p>
+          <div class="note-box">⚡ Parcours recommandé : 2 mois TryHackMe → HTB Academy → HTB machines faciles → CTF.</div>
+        </div></div>
+      </div>
+      <div id="intro-quiz" class="hidden"><div id="intro-qcards"></div></div>
+      <div id="intro-lab" class="hidden">
+        <div class="card"><div class="card-head">🎯 PREMIERS PAS</div><div class="card-body">
+          <p style="color:var(--cyan);margin-bottom:10px;">Défi 1 — Qui suis-je ?</p>
+          <div class="cmd-block" onclick="runCmd('whoami','intro')">whoami<span class="run-lbl">▶ RUN</span></div>
+          <p style="color:var(--cyan);margin-bottom:10px;">Défi 2 — Mon système</p>
+          <div class="cmd-block" onclick="runCmd('uname -a','intro')">uname -a<span class="run-lbl">▶ RUN</span></div>
+          <p style="color:var(--cyan);margin-bottom:10px;">Défi 3 — Aide</p>
+          <div class="cmd-block" onclick="runCmd('help','intro')">help<span class="run-lbl">▶ RUN</span></div>
+        </div></div>
+      </div>
+      <div class="term-wrap">
+        <div class="term-bar"><div class="term-dots"><div class="tdot r"></div><div class="tdot y"></div><div class="tdot g"></div></div><div class="term-ttl">ghost@academy:~</div><div class="term-st pulse">● LIVE</div></div>
+        <div class="term-out" id="term-intro"><div class="t info">// MODULE INTRODUCTION — GRATUIT</div><div class="t dim">Clique ▶ RUN ou tape une commande</div><div class="t"> </div></div>
+        <div class="term-in-row"><div class="term-pmt">$</div><input class="term-inp" id="tinput-intro" placeholder="commande..." onkeydown="if(event.key==='Enter'){runCmd(this.value,'intro');this.value='';}"><button class="go-btn" onclick="var i=document.getElementById('tinput-intro');runCmd(i.value,'intro');i.value='';">GO</button></div>
+      </div>
+    </div>
+
+    <!-- MODULE 02 — NETWORK HACKING -->
+    <div class="page" id="page-network">
+      <div class="mod-hdr">
+        <div class="mod-tag">// MODULE 02</div>
+        <div class="mod-title">NETWORK HACKING</div>
+        <div class="mod-desc">ARP Spoofing, MITM, Wi-Fi WPA2, sniffing. Prends le contrôle du réseau.</div>
+        <div class="pills"><span class="pill pill-cyan">ARP SPOOF</span><span class="pill pill-red">WPA2</span><span class="pill pill-cyan">MITM</span></div>
+      </div>
+      <div class="seg-tabs">
+        <button class="seg-tab active" onclick="segTab(this,'network','theory')">⚡ THÉORIE</button>
+        <button class="seg-tab" onclick="segTab(this,'network','quiz')">🎯 QUIZ</button>
+        <button class="seg-tab" onclick="segTab(this,'network','lab')">💻 LAB</button>
+      </div>
+      <div id="network-theory">
+        <div class="card"><div class="card-head">🎭 ARP SPOOFING & MITM</div><div class="card-body">
+          <p>L'ARP Spoofing empoisonne le cache ARP des victimes pour te placer entre elles et la passerelle — tout le trafic passe par toi.</p>
+          <div class="cmd-block" onclick="runCmd('echo 1 > /proc/sys/net/ipv4/ip_forward','network')">echo 1 > /proc/sys/net/ipv4/ip_forward<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('arpspoof -i eth0 -t 192.168.1.10 192.168.1.1','network')">arpspoof -i eth0 -t VICTIME GATEWAY<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('bettercap -iface eth0','network')">bettercap -iface eth0<span class="run-lbl">▶ RUN</span></div>
+          <div class="note-box">⚡ Bettercap est l'outil MITM moderne tout-en-un : ARP, DNS, HTTP, HTTPS stripping.</div>
+        </div></div>
+        <div class="card"><div class="card-head">📡 WI-FI HACKING WPA2</div><div class="card-body">
+          <p>Objectif : capturer le handshake WPA2 lors d'une (dé)authentification, puis le cracker offline.</p>
+          <div class="cmd-block" onclick="runCmd('airmon-ng start wlan0','network')">airmon-ng start wlan0<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('airodump-ng wlan0mon','network')">airodump-ng wlan0mon<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('aireplay-ng --deauth 5 -a BSSID wlan0mon','network')">aireplay-ng --deauth 5 -a BSSID<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('hashcat -m 22000 capture.hc22000 rockyou.txt','network')">hashcat -m 22000 capture.hc22000 rockyou.txt<span class="run-lbl">▶ RUN</span></div>
+        </div></div>
+        <div class="card"><div class="card-head">🔍 SNIFFING & WIRESHARK</div><div class="card-body">
+          <p>Capture et analyse du trafic réseau en temps réel.</p>
+          <div class="cmd-block" onclick="runCmd('tcpdump -i eth0 -w capture.pcap','network')">tcpdump -i eth0 -w capture.pcap<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('tcpdump -i eth0 port 80 -A','network')">tcpdump -i eth0 port 80 -A<span class="run-lbl">▶ RUN</span></div>
+          <div class="note-box">⚡ Sur HTTPS : SSL Strip (Bettercap) ou analyse des métadonnées. Le chiffrement ne cache pas tout.</div>
+        </div></div>
+      </div>
+      <div id="network-quiz" class="hidden"><div id="network-qcards"></div></div>
+      <div id="network-lab" class="hidden">
+        <div class="card"><div class="card-head">🎯 DÉFIS RÉSEAU</div><div class="card-body">
+          <p style="color:var(--cyan);margin-bottom:10px;">Défi 1 — Active le forwarding IP</p>
+          <div class="cmd-block" onclick="runCmd('echo 1 > /proc/sys/net/ipv4/ip_forward','network')">ip_forward<span class="run-lbl">▶ RUN</span></div>
+          <p style="color:var(--cyan);margin-bottom:10px;">Défi 2 — Lance Bettercap</p>
+          <div class="cmd-block" onclick="runCmd('bettercap -iface eth0','network')">bettercap<span class="run-lbl">▶ RUN</span></div>
+          <p style="color:var(--cyan);margin-bottom:10px;">Défi 3 — Capture le trafic</p>
+          <div class="cmd-block" onclick="runCmd('tcpdump -i eth0 -w capture.pcap','network')">tcpdump capture<span class="run-lbl">▶ RUN</span></div>
+        </div></div>
+      </div>
+      <div class="term-wrap">
+        <div class="term-bar"><div class="term-dots"><div class="tdot r"></div><div class="tdot y"></div><div class="tdot g"></div></div><div class="term-ttl">ghost@academy:~</div><div class="term-st pulse">● LIVE</div></div>
+        <div class="term-out" id="term-network"><div class="t info">// NETWORK HACKING</div><div class="t dim">Clique ▶ RUN ou tape une commande</div><div class="t"> </div></div>
+        <div class="term-in-row"><div class="term-pmt">$</div><input class="term-inp" id="tinput-network" placeholder="commande..." onkeydown="if(event.key==='Enter'){runCmd(this.value,'network');this.value='';}"><button class="go-btn" onclick="var i=document.getElementById('tinput-network');runCmd(i.value,'network');i.value='';">GO</button></div>
+      </div>
+    </div>
+
+    <!-- MODULE 05 — CRYPTO -->
+    <div class="page" id="page-crypto">
+      <div class="mod-hdr">
+        <div class="mod-tag">// MODULE 05</div>
+        <div class="mod-title">CRYPTOGRAPHIE OFFENSIVE</div>
+        <div class="mod-desc">Hash cracking, JWT attacks, padding oracle. La crypto est partout — apprends à la briser.</div>
+        <div class="pills"><span class="pill pill-cyan">HASHCAT</span><span class="pill pill-red">JWT</span><span class="pill pill-cyan">PADDING ORACLE</span></div>
+      </div>
+      <div class="seg-tabs">
+        <button class="seg-tab active" onclick="segTab(this,'crypto','theory')">⚡ THÉORIE</button>
+        <button class="seg-tab" onclick="segTab(this,'crypto','quiz')">🎯 QUIZ</button>
+        <button class="seg-tab" onclick="segTab(this,'crypto','lab')">💻 LAB</button>
+      </div>
+      <div id="crypto-theory">
+        <div class="card"><div class="card-head">🔑 IDENTIFIER & CRACKER LES HASH</div><div class="card-body">
+          <p>Avant de cracker : identifier le type de hash. <code>hashid</code> ou <code>hash-identifier</code> font ça en secondes.</p>
+          <div class="cmd-block" onclick="runCmd('hashid 5f4dcc3b5aa765d61d8327deb882cf99','crypto')">hashid 5f4dcc3b5aa765d61d8327deb882cf99<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('hashcat -m 0 hash.txt rockyou.txt','crypto')">hashcat -m 0 (MD5) hash.txt rockyou.txt<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('hashcat -m 1000 hash.txt rockyou.txt','crypto')">hashcat -m 1000 (NTLM) hash.txt rockyou.txt<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('john --wordlist=rockyou.txt hash.txt','crypto')">john --wordlist=rockyou.txt hash.txt<span class="run-lbl">▶ RUN</span></div>
+          <div class="note-box">⚡ GPU Hashcat = 1 milliard de MD5/seconde. Un mot de passe de 8 chars → cracké en minutes.</div>
+        </div></div>
+        <div class="card"><div class="card-head">🎫 JWT ATTACKS</div><div class="card-body">
+          <p>Les JWT (JSON Web Tokens) sont partout en auth web. 3 attaques classiques :</p>
+          <p><strong style="color:var(--cyan)">1. alg:none</strong> — Change l'algorithme en "none", supprime la signature. Certains serveurs acceptent.</p>
+          <p><strong style="color:var(--cyan)">2. Brute force du secret</strong> — Si HS256, le secret peut être cracké.</p>
+          <div class="cmd-block" onclick="runCmd('hashcat -a 0 -m 16500 token.jwt rockyou.txt','crypto')">hashcat -m 16500 token.jwt rockyou.txt<span class="run-lbl">▶ RUN</span></div>
+          <p><strong style="color:var(--cyan)">3. RS256→HS256</strong> — Signe avec la clé publique comme secret HMAC.</p>
+          <div class="note-box">⚡ Outils : jwt.io (décode), jwt_tool (automatise toutes les attaques), CyberChef.</div>
+        </div></div>
+        <div class="card"><div class="card-head">🧮 PADDING ORACLE & CBC</div><div class="card-body">
+          <p>Attaque sur les implémentations CBC qui révèlent si le padding est valide. Permet de déchiffrer sans clé.</p>
+          <p>Principe : chaque bloc CBC dépend du précédent. En manipulant les octets et observant les erreurs de padding, on reconstruit le plaintext octet par octet.</p>
+          <div class="cmd-block" onclick="runCmd('padbuster http://target.com/page ENCRYPTED_VALUE 8','crypto')">padbuster target CIPHER BLOCKSIZE<span class="run-lbl">▶ RUN</span></div>
+          <div class="note-box">⚡ Ressource : CryptoHack.org — challenges progressifs sur tous les algos. Indispensable pour les CTF crypto.</div>
+        </div></div>
+      </div>
+      <div id="crypto-quiz" class="hidden"><div id="crypto-qcards"></div></div>
+      <div id="crypto-lab" class="hidden">
+        <div class="card"><div class="card-head">🎯 DÉFIS CRYPTO</div><div class="card-body">
+          <p style="color:var(--cyan);margin-bottom:10px;">Défi 1 — Identifier ce hash</p>
+          <div class="cmd-block" onclick="runCmd('hashid 5f4dcc3b5aa765d61d8327deb882cf99','crypto')">hashid MD5<span class="run-lbl">▶ RUN</span></div>
+          <p style="color:var(--cyan);margin-bottom:10px;">Défi 2 — Cracker avec John</p>
+          <div class="cmd-block" onclick="runCmd('john --wordlist=rockyou.txt hash.txt','crypto')">john crack<span class="run-lbl">▶ RUN</span></div>
+          <p style="color:var(--cyan);margin-bottom:10px;">Défi 3 — Cracker JWT</p>
+          <div class="cmd-block" onclick="runCmd('hashcat -a 0 -m 16500 token.jwt rockyou.txt','crypto')">hashcat JWT<span class="run-lbl">▶ RUN</span></div>
+        </div></div>
+      </div>
+      <div class="term-wrap">
+        <div class="term-bar"><div class="term-dots"><div class="tdot r"></div><div class="tdot y"></div><div class="tdot g"></div></div><div class="term-ttl">ghost@academy:~</div><div class="term-st pulse">● LIVE</div></div>
+        <div class="term-out" id="term-crypto"><div class="t info">// CRYPTOGRAPHIE OFFENSIVE</div><div class="t dim">Clique ▶ RUN ou tape une commande</div><div class="t"> </div></div>
+        <div class="term-in-row"><div class="term-pmt">$</div><input class="term-inp" id="tinput-crypto" placeholder="commande..." onkeydown="if(event.key==='Enter'){runCmd(this.value,'crypto');this.value='';}"><button class="go-btn" onclick="var i=document.getElementById('tinput-crypto');runCmd(i.value,'crypto');i.value='';">GO</button></div>
+      </div>
+    </div>
+
     <!-- HOME PAGE -->
     <div class="page active" id="page-home">
       <div class="mod-hdr" style="background:linear-gradient(180deg,rgba(0,229,255,.05) 0%,transparent 100%);">
@@ -349,9 +508,12 @@ html,body { height:100%; overflow:hidden; }
   <!-- BOTTOM NAV -->
   <div class="bottom-nav">
     <button class="nav-btn active" onclick="goPage('home',this)"><span class="n-icon">🏠</span><span class="n-label">HOME</span></button>
+    <button class="nav-btn" onclick="goPage('intro',this)"><span class="n-icon">🎯</span><span class="n-label">INTRO</span></button>
     <button class="nav-btn" onclick="goPage('recon',this)"><span class="n-icon">🔍</span><span class="n-label">RECON</span></button>
+    <button class="nav-btn" onclick="goPage('network',this)"><span class="n-icon">🌐</span><span class="n-label">RÉSEAU</span></button>
     <button class="nav-btn" onclick="goPage('web',this)"><span class="n-icon">💉</span><span class="n-label">WEB</span></button>
     <button class="nav-btn" onclick="goPage('post',this)"><span class="n-icon">🔓</span><span class="n-label">POST</span></button>
+    <button class="nav-btn" onclick="goPage('crypto',this)"><span class="n-icon">🔐</span><span class="n-label">CRYPTO</span></button>
     <button class="nav-btn ai-nav" onclick="goPage('ai',this)"><span class="n-icon">🤖</span><span class="n-label">GHOST AI</span></button>
     <button class="nav-btn" onclick="goPage('skills',this)"><span class="n-icon">🌳</span><span class="n-label">SKILLS</span></button>
   </div>
@@ -364,17 +526,43 @@ html,body { height:100%; overflow:hidden; }
 </div>
 
 <script src="js/config.js"></script>
+<script src="js/stripe.js"></script>
+<style>
+#paywallOverlay {
+  display:none; position:fixed; inset:0; z-index:999;
+  background:rgba(7,13,20,0.97); backdrop-filter:blur(20px);
+  align-items:center; justify-content:center; flex-direction:column;
+  text-align:center; padding:32px;
+}
+#paywallOverlay.active { display:flex; }
+.pw-icon { font-size:56px; margin-bottom:16px; }
+.pw-title { font-family:'Orbitron',monospace; font-size:20px; color:var(--text-bright); margin-bottom:8px; }
+.pw-sub { font-size:14px; color:var(--text-mid); margin-bottom:28px; line-height:1.6; max-width:320px; }
+.pw-btns { display:flex; flex-direction:column; gap:12px; width:100%; max-width:300px; }
+</style>
+<!-- PAYWALL OVERLAY -->
+<div id="paywallOverlay">
+  <div class="pw-icon">🔒</div>
+  <div class="pw-title">MODULE PREMIUM</div>
+  <div class="pw-sub">Ce module est réservé aux membres. Obtiens un accès complet pour débloquer tous les modules, le terminal et le Ghost AI.</div>
+  <div class="pw-btns">
+    <a href="index.html#pricing" class="btn btn-primary" style="justify-content:center;">OBTENIR L'ACCÈS →</a>
+    <button onclick="document.getElementById('paywallOverlay').classList.remove('active');goPage('home',document.querySelector('.nav-btn'));" class="btn btn-ghost" style="justify-content:center;">← RETOUR</button>
+  </div>
+</div>
 <script>
 // ── STATE ──
 let xp=0,totalQ=0,totalC=0,cmdCount=0;
 const skills=[
   {n:'Reconnaissance',i:'🔍',c:'#00e5ff',v:0},
+  {n:'Network',i:'🌐',c:'#00e5ff',v:0},
   {n:'Web Exploit',i:'💉',c:'#ff2d55',v:0},
   {n:'Post-Exploit',i:'🔓',c:'#ff9f0a',v:0},
+  {n:'Crypto',i:'🔐',c:'#00ff88',v:0},
   {n:'Ghost AI',i:'🤖',c:'#bf5af2',v:0},
 ];
 const ranks=[[0,'GHOST_INIT'],[200,'SCRIPT_KID'],[500,'GREY_HAT'],[1000,'BLACK_HAT'],[2000,'ELITE_HACKER'],[5000,'PHANTOM_0DAY']];
-const skillMod={recon:0,web:1,post:2,ai:3};
+const skillMod={intro:0,recon:0,network:1,web:2,post:3,crypto:4,ai:5};
 
 // ── QUIZ DATA ──
 const QD={
@@ -392,6 +580,21 @@ const QD={
     {q:"`sudo -l` affiche :",o:["A. Les processus actifs","B. Les commandes exécutables en root sans password","C. Les connexions réseau","D. Les fichiers modifiés"],c:1,e:"PREMIÈRE commande en privesc Linux. Liste ce que tu peux exécuter sans password. Consulte GTFOBins ensuite."},
     {q:"SUID bit sur un binaire root signifie :",o:["A. Fichier chiffré","B. S'exécute avec les droits du propriétaire (root)","C. Fichier protégé en lecture","D. Binaire signé"],c:1,e:"SUID sur un binaire root = il s'exécute EN ROOT quand tu le lances. Si GTFOBins le liste, tu as root."},
     {q:"Pass-the-Hash permet de :",o:["A. Cracker un hash","B. S'authentifier sans le password en clair","C. Bypasser SSL","D. Injecter via hash"],c:1,e:"NTLM accepte le hash directement. Avec evil-winrm ou psexec, tu t'authentifies sans jamais cracker le mot de passe."},
+  ],
+  intro:[
+    {q:"Ce qui distingue un hacker éthique d'un attaquant ?",o:["A. Les outils utilisés","B. L'autorisation écrite de la cible","C. Le niveau de compétence","D. Le système d'exploitation"],c:1,e:"L'autorisation écrite est la seule ligne légale. Sans elle, même les meilleures intentions ne protègent pas."},
+    {q:"Quel OS est le standard en cybersécurité offensive ?",o:["A. Windows 11","B. macOS","C. Kali Linux","D. Ubuntu Desktop"],c:2,e:"Kali Linux embarque +600 outils pré-installés. C'est la distrib de référence pour les pentesteurs et CTF."},
+    {q:"TryHackMe est recommandé pour :",o:["A. Les experts CTF","B. Les débutants qui apprennent les bases","C. Le bug bounty avancé","D. L'exploitation noyau"],c:1,e:"TryHackMe est guidé et structuré — parfait pour débuter. HTB est plus libre et plus difficile."},
+  ],
+  network:[
+    {q:"L'ARP Spoofing permet de :",o:["A. Scanner les ports","B. Se placer entre deux machines (MITM)","C. Cracker WPA2","D. Exploiter une faille web"],c:1,e:"ARP Spoofing empoisonne les caches ARP pour rediriger le trafic vers l'attaquant — base de toute attaque MITM."},
+    {q:"Pour capturer un handshake WPA2, on utilise :",o:["A. Nmap","B. SQLmap","C. Airodump-ng + Aireplay-ng","D. Metasploit"],c:2,e:"Airodump-ng capture le réseau, Aireplay-ng force la déauth du client pour déclencher un nouveau handshake WPA2."},
+    {q:"Bettercap est :",o:["A. Un scanner de ports","B. Un framework MITM tout-en-un","C. Un cracker de hash","D. Un fuzzer web"],c:1,e:"Bettercap gère ARP, DNS spoofing, HTTP/HTTPS interception et bien plus — le remplaçant moderne d'Ettercap."},
+  ],
+  crypto:[
+    {q:"Pour identifier le type d'un hash, on utilise :",o:["A. nmap","B. hashid","C. sqlmap","D. ffuf"],c:1,e:"hashid analyse la longueur et le format du hash pour identifier l'algorithme et proposer le mode Hashcat correct."},
+    {q:"Le mode Hashcat pour NTLM (Windows) est :",o:["A. -m 0","B. -m 1800","C. -m 1000","D. -m 3200"],c:2,e:"-m 1000 = NTLM (hashes Windows). -m 0 = MD5. -m 1800 = sha512crypt. -m 3200 = bcrypt."},
+    {q:"L'attaque JWT 'alg:none' consiste à :",o:["A. Bruteforcer le secret","B. Supprimer la signature et mettre l'algo à none","C. Injecter du SQL dans le payload","D. Rejouer un token expiré"],c:1,e:"Certains serveurs acceptent les tokens sans signature si l'algo est 'none'. Toujours tester en CTF web."},
   ],
 };
 
@@ -415,6 +618,13 @@ const TR={
   john:['letmein (admin)','[✓] Password cracké : letmein'],
   ollama:['>>> Chargement llama3...','Ghost AI (local): Prêt. Quel exploit analyser ?','Modèle: llama3 | Local: 100% | Zéro cloud'],
   help:['Commandes : nmap, subfinder, theHarvester, whois, dig','           sqlmap, ffuf, curl, dalfox','           sudo, find, mimikatz','           hashcat, hashid, john, ollama','','Clique ▶ RUN pour lancer directement'],
+  tcpdump:['Capturing on eth0...','16:42:01.123 IP 192.168.1.10 > 192.168.1.1: HTTP GET /login','16:42:01.234 IP 192.168.1.1 > 192.168.1.10: HTTP 200 OK','[✓] Trafic capturé — 2 paquets'],
+  arpspoof:['[*] Empoisonnement ARP en cours...','arpspoof: gateway 192.168.1.1','[!] Envoie faux ARP à 192.168.1.10','[✓] MITM actif — tu es entre la victime et la gateway'],
+  bettercap:['bettercap v2.32.0','[*] Loading modules...','[✓] net.probe on','[✓] arp.spoof on','[*] 3 hosts trouvés sur le réseau'],
+  airmon:['[*] Killing conflicting processes...','PHY     Interface   Driver','phy0    wlan0mon    rt2800usb','[✓] Monitor mode activé sur wlan0mon'],
+  airodump:['CH  3 ][ Elapsed: 2s','BSSID              PWR  #Data  CH  MB   ENC    ESSID','AA:BB:CC:DD:EE:FF  -45   1024  6  540  WPA2   TargetWiFi','[✓] Réseau détecté — copie le BSSID'],
+  aireplay:['[*] Sending 5 DeAuth to TargetWiFi...','[✓] Handshake WPA2 capturé dans capture.cap !'],
+  padbuster:['[*] Sending request...','[*] Byte 1: 0x41 (A)','[*] Byte 2: 0x64 (d)','[✓] Plaintext déchiffré : Admin'],
   clear:['__CLEAR__'],
 };
 
@@ -450,8 +660,17 @@ function addXP(amount,mod){
   renderSkills();
 }
 
+// ── ACCESS CONTROL ──
+const FREE_PAGES=['home','intro','ai','skills'];
+const hasAccess=(typeof checkAccess==='function')?checkAccess():false;
+
 // ── PAGE ──
 function goPage(id,btn){
+  if(!FREE_PAGES.includes(id)&&!hasAccess){
+    document.getElementById('paywallOverlay').classList.add('active');
+    return;
+  }
+  document.getElementById('paywallOverlay').classList.remove('active');
   document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active');});
   document.getElementById('page-'+id).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
@@ -505,15 +724,19 @@ function renderSkills(){
 function buildHome(){
   const list=document.getElementById('homeModList');
   const mods=[
-    {id:'recon',icon:'🔍',tag:'MODULE 01',title:'Reconnaissance',meta:'5 leçons · 2h30',nav:'recon'},
+    {id:'intro',icon:'🎯',tag:'MODULE 00 — GRATUIT',title:'Introduction',meta:'4 leçons · 45min',nav:'intro',free:true},
+    {id:'recon',icon:'🔍',tag:'MODULE 01',title:'Reconnaissance & OSINT',meta:'6 leçons · 2h30',nav:'recon'},
+    {id:'network',icon:'🌐',tag:'MODULE 02',title:'Network Hacking',meta:'5 leçons · 3h00',nav:'network'},
     {id:'web',icon:'💉',tag:'MODULE 03',title:'Web Exploitation',meta:'7 leçons · 4h00',nav:'web'},
     {id:'post',icon:'🔓',tag:'MODULE 04',title:'Post-Exploitation',meta:'6 leçons · 3h30',nav:'post'},
-    {id:'ai',icon:'🤖',tag:'GHOST AI',title:'AI Mentor',meta:'Illimité · 24/7',nav:'ai'},
+    {id:'crypto',icon:'🔐',tag:'MODULE 05',title:'Cryptographie Offensive',meta:'5 leçons · 2h00',nav:'crypto'},
+    {id:'ai',icon:'🤖',tag:'GHOST AI',title:'AI Mentor',meta:'Illimité · 24/7',nav:'ai',free:true},
   ];
   mods.forEach(m=>{
     const d=document.createElement('div');
     d.className='home-mod-card';
-    d.innerHTML=`<div class="home-mod-icon">${m.icon}</div><div class="home-mod-info"><div class="home-mod-tag">${m.tag}</div><div class="home-mod-title">${m.title}</div><div class="home-mod-meta">${m.meta}</div></div><div class="home-mod-arrow">›</div>`;
+    const locked=!m.free&&!hasAccess;
+    d.innerHTML=`<div class="home-mod-icon">${m.icon}</div><div class="home-mod-info"><div class="home-mod-tag">${m.tag}</div><div class="home-mod-title">${m.title}</div><div class="home-mod-meta">${m.meta}</div></div><div class="home-mod-arrow">${locked?'🔒':'›'}</div>`;
     d.onclick=()=>{
       const btn=document.querySelector(`.nav-btn[onclick*="goPage('${m.nav}'"]`);
       if(btn)btn.click();
