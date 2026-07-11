@@ -145,7 +145,7 @@ html,body{height:100%;overflow:hidden;}
           <button class="btn btn-primary w-full" style="justify-content:center;" onclick="document.querySelector('.nb[onclick*=modules]').click()">+ NOUVEAU MODULE</button>
           <button class="btn btn-ghost w-full" style="justify-content:center;" onclick="document.querySelector('.nb[onclick*=guide]').click()">📖 GUIDE DÉPLOIEMENT</button>
           <a href="../index.html" target="_blank" class="btn btn-ghost w-full" style="justify-content:center;">🌐 VOIR LANDING PAGE</a>
-          <a href="../platform.html" target="_blank" class="btn btn-ghost w-full" style="justify-content:center;">🎓 VOIR PLATEFORME</a>
+          <button class="btn btn-purple w-full" style="justify-content:center;" onclick="previewPlatform()">👁 TESTER LA PLATEFORME (APERÇU)</button>
         </div>
       </div>
       <div class="card" style="margin-top:12px;">
@@ -377,6 +377,15 @@ function logout(){
   document.getElementById('loginScreen').style.display='flex';
   document.getElementById('mainApp').style.display='none';
   document.getElementById('loginPwd').value='';
+}
+
+// ── APERÇU PLATEFORME ──
+// Ouvre la plateforme en mode aperçu admin : tous les modules débloqués,
+// sans paiement, pour tester le contenu. Le mot de passe transite une seule
+// fois dans l'URL puis platform.html le retire immédiatement.
+function previewPlatform(){
+  const pwd=encodeURIComponent(GHOST_CONFIG.admin.password);
+  window.open('../platform.html?preview='+pwd,'_blank');
 }
 
 // ── MODULES DATA ──

@@ -609,7 +609,7 @@ const TR={
   sqlmap:['sqlmap 1.7 #stable','[INFO] testing connection...','[INFO] GET parameter \'id\' injectable','[*] Databases:','    information_schema','    users_db','    admin_panel','[✓] SQLi confirmée !'],
   ffuf:['[Status: 200] /admin','[Status: 301] /uploads','[Status: 403] /.git','[Status: 200] /backup.zip','[✓] 4 endpoints trouvés !'],
   curl:['root:x:0:0:root:/root:/bin/bash','ghost:x:1000:1000::/home/ghost:/bin/bash','[✓] LFI CONFIRMÉE — /etc/passwd accessible !'],
-  dalfox:['[POC][XSS] http://target.com/search?q=<script>alert(1)</script>','[✓] 2 vulnérabilités XSS trouvées !'],
+  dalfox:['[POC][XSS] http://target.com/search?q=<script>alert(1)<\/script>','[✓] 2 vulnérabilités XSS trouvées !'],
   sudo:['User ghost may run:','    (ALL) NOPASSWD: /usr/bin/python3','[!] VULNÉRABLE → python3 sans password → check GTFOBins !'],
   find:['[!] /proc: Permission denied','/usr/bin/sudo','/usr/bin/passwd','/bin/su','[✓] 4 SUID binaries — check GTFOBins !'],
   mimikatz:['mimikatz 2.2.0 (x64)','User Name    : Administrator','Password     : Sup3rP@ss!','[✓] Credentials dumpés !'],
@@ -662,7 +662,22 @@ function addXP(amount,mod){
 
 // ── ACCESS CONTROL ──
 const FREE_PAGES=['home','intro','ai','skills'];
-const hasAccess=(typeof checkAccess==='function')?checkAccess():false;
+// Mode aperçu admin : ouvre platform.html?preview=<mot_de_passe_admin> pour
+// débloquer tous les modules et tester le contenu sans payer. L'accès est
+// gardé en session (temporaire, effacé à la fermeture de l'onglet) et le
+// mot de passe est aussitôt retiré de l'URL.
+(function(){
+  try{
+    const p=new URLSearchParams(location.search).get('preview');
+    const adminPwd=(typeof GHOST_CONFIG!=='undefined'&&GHOST_CONFIG.admin)?GHOST_CONFIG.admin.password:null;
+    if(p&&adminPwd&&p===adminPwd){
+      sessionStorage.setItem('ga_preview','1');
+      history.replaceState(null,'',location.pathname);
+    }
+  }catch(e){}
+})();
+const isPreview=(()=>{try{return sessionStorage.getItem('ga_preview')==='1';}catch(e){return false;}})();
+const hasAccess=isPreview||((typeof checkAccess==='function')?checkAccess():false);
 
 // ── PAGE ──
 function goPage(id,btn){
@@ -782,6 +797,15 @@ function sendAI(){
     addXP(20,'ai');snd.disabled=false;
     msgs.lastElementChild.scrollIntoView({behavior:'smooth'});
   },700+Math.random()*500);
+}
+
+// ── PREVIEW BADGE (mode aperçu admin) ──
+if(isPreview){
+  const b=document.createElement('div');
+  b.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h) + var(--safe-bot) + 10px);z-index:300;background:var(--purple-dim,rgba(191,90,242,.15));border:1px solid var(--purple,#bf5af2);color:var(--purple,#bf5af2);font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:1px;padding:6px 12px;border-radius:20px;display:flex;align-items:center;gap:8px;backdrop-filter:blur(10px);';
+  b.innerHTML='👁 MODE APERÇU ADMIN <span style="cursor:pointer;text-decoration:underline;">QUITTER</span>';
+  b.querySelector('span').onclick=()=>{try{sessionStorage.removeItem('ga_preview');}catch(e){}location.href='index.html';};
+  document.body.appendChild(b);
 }
 
 // ── INIT ──
