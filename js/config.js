@@ -18,13 +18,13 @@ const GHOST_CONFIG = {
   // 1. Va sur dashboard.stripe.com
   // 2. Developers → API Keys → Publishable key
   stripe: {
-    publicKey: 'pk_test_REMPLACE_PAR_TA_CLE_STRIPE',
+    publicKey: 'pk_live_51PQmEOK8S2adJvU9lFXcPdRDa2PoQxaI9K5hZFyY9orOkgts6QXpRMxHU1EoabcHdmQ9NiJVUOdxvPumueI0UhV600HqaMPdkg',
     // Plans disponibles (crée-les dans Stripe Dashboard → Products)
     plans: [
       {
         id: 'plan_starter',
         name: 'STARTER',
-        priceId: 'price_REMPLACE_ID_STRIPE',
+        priceId: 'price_1TrtdiK8S2adJvU9UbK7NmVN',
         price: 29,
         currency: 'EUR',
         period: 'mois',
@@ -34,7 +34,7 @@ const GHOST_CONFIG = {
       {
         id: 'plan_elite',
         name: 'ELITE',
-        priceId: 'price_REMPLACE_ID_STRIPE_2',
+        priceId: 'price_1TrtfIK8S2adJvU9eg8Sd5kJ',
         price: 79,
         currency: 'EUR',
         period: 'mois',
@@ -45,7 +45,7 @@ const GHOST_CONFIG = {
       {
         id: 'plan_lifetime',
         name: 'LIFETIME',
-        priceId: 'price_REMPLACE_ID_STRIPE_3',
+        priceId: 'price_1TrtttK8S2adJvU9tZqWh2k6',
         price: 299,
         currency: 'EUR',
         period: 'unique',
