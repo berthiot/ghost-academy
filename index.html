@@ -282,6 +282,7 @@ footer {
     <h2 style="margin-bottom:8px;">Investis dans ton expertise.</h2>
     <p style="color:var(--text-mid);margin-bottom:40px;">Accès immédiat après paiement. Annulation à tout moment.</p>
     <div class="pricing-grid" id="pricingGrid"></div>
+    <div id="donationCta" style="display:none;text-align:center;margin-top:32px;"></div>
   </div>
 </section>
 
@@ -378,6 +379,9 @@ footer {
 <script src="js/config.js"></script>
 <script src="js/stripe.js"></script>
 <script>
+// gateContent=false => contenu libre : plus aucun module verrouillé ici.
+const gateContent = (GHOST_CONFIG.payment ? GHOST_CONFIG.payment.gateContent !== false : true);
+
 // ── LOAD MODULES ──
 fetch('data/modules.json')
   .then(r=>r.json())
@@ -385,12 +389,13 @@ fetch('data/modules.json')
     const grid = document.getElementById('modulesGrid');
     const colors = { '#00e5ff':'cyan', '#ff2d55':'red', '#ff9f0a':'orange', '#00ff88':'green', '#bf5af2':'purple' };
     data.modules.forEach(m=>{
+      const locked = gateContent && m.locked;
       const colorKey = m.color || '#00e5ff';
       const card = document.createElement('div');
       card.className = 'module-card';
       card.style.cssText = `--card-color:${colorKey}`;
       card.innerHTML = `
-        ${m.locked ? '<span class="lock-badge">🔒</span>' : '<span class="lock-badge">🔓</span>'}
+        ${locked ? '<span class="lock-badge">🔒</span>' : '<span class="lock-badge">🔓</span>'}
         <div class="card-icon">${m.icon}</div>
         <div class="card-tag">${m.tag}</div>
         <div class="card-title">${m.title}</div>
@@ -408,8 +413,8 @@ fetch('data/modules.json')
       card.style.cursor = 'pointer';
       card.addEventListener('mouseenter', ()=>{ card.style.borderColor = colorKey+'44'; });
       card.addEventListener('mouseleave', ()=>{ card.style.borderColor = ''; });
-      card.querySelector('.card-title').style.color = m.locked ? '' : colorKey;
-      if(!m.locked) card.onclick = ()=>{ window.location.href='platform.html?module='+m.id; };
+      card.querySelector('.card-title').style.color = locked ? '' : colorKey;
+      if(!locked) card.onclick = ()=>{ window.location.href='platform.html?module='+m.id; };
       else card.onclick = ()=>{ document.getElementById('pricing').scrollIntoView({behavior:'smooth'}); };
       grid.appendChild(card);
     });
@@ -438,6 +443,18 @@ plans.forEach(p=>{
   `;
   grid.appendChild(card);
 });
+
+// ── DONATION ──
+// Affichée uniquement si activée ET si un lien est renseigné dans config.js.
+(function(){
+  const d = GHOST_CONFIG.donation;
+  if(!d || !d.enabled || !d.url) return;
+  const box = document.getElementById('donationCta');
+  box.style.display = 'block';
+  box.innerHTML =
+    `<p style="color:var(--text-mid);margin-bottom:14px;font-size:14px;">Le contenu est accessible librement. Si le projet t'aide, tu peux le soutenir 🙏</p>`+
+    `<a href="${d.url}" target="_blank" rel="noopener" class="btn btn-purple btn-lg" style="justify-content:center;">${d.label||'Soutenir le projet'}</a>`;
+})();
 
 // ── FAQ ──
 const faqs = [

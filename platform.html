@@ -679,7 +679,10 @@ const FREE_PAGES=['home','intro','ai','skills'];
   }catch(e){ try{location.replace(location.pathname);}catch(_){} }
 })();
 const isPreview=(()=>{try{return sessionStorage.getItem('ga_preview')==='1';}catch(e){return false;}})();
-const hasAccess=isPreview||((typeof checkAccess==='function')?checkAccess():false);
+// Verrouillage du contenu piloté par la config. gateContent=false => accès
+// libre à tous les modules (le paiement Stripe reste dispo comme soutien).
+const gateContent=(typeof GHOST_CONFIG!=='undefined'&&GHOST_CONFIG.payment)?GHOST_CONFIG.payment.gateContent!==false:true;
+const hasAccess=(!gateContent)||isPreview||((typeof checkAccess==='function')?checkAccess():false);
 
 // ── PAGE ──
 function goPage(id,btn){

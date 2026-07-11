@@ -71,6 +71,25 @@ const GHOST_CONFIG = {
     notifEmail: 'toi@email.com',
   },
 
+  // ── PAIEMENT ──────────────────────────────
+  payment: {
+    // false = le contenu n'est PAS verrouillé (accès libre à tous les modules).
+    //         Les prix et le paiement Stripe restent affichés : c'est un
+    //         soutien optionnel, pas une barrière.
+    // true  = le paiement redevient obligatoire pour débloquer les modules.
+    //         (à activer le jour où tu monétises pour de vrai)
+    gateContent: false,
+  },
+
+  // ── DONATION ──────────────────────────────
+  donation: {
+    enabled: true,
+    // Colle ton lien de don ici (Ko-fi, Buy Me a Coffee, PayPal.me...).
+    // Tant que c'est vide, le bouton de don reste masqué.
+    url: '',
+    label: '☕ Soutenir le projet',
+  },
+
   // ── ACCÈS CONTENU ─────────────────────────
   // Modules accessibles sans paiement
   freeModules: ['module-00'],
