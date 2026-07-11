@@ -361,9 +361,18 @@ Option 3: Supabase Edge Functions
 <script src="../js/config.js"></script>
 <script>
 // ── AUTH ──
-function doLogin(){
+// Le mot de passe n'est jamais stocké en clair : on compare l'empreinte
+// SHA-256 de ce qui est saisi avec GHOST_CONFIG.admin.passwordHash.
+let _adminPwd=null; // gardé en mémoire (jamais persisté) pour le lien d'aperçu
+async function sha256Hex(str){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function doLogin(){
   const pwd=document.getElementById('loginPwd').value;
-  if(pwd===GHOST_CONFIG.admin.password){
+  const hash=await sha256Hex(pwd);
+  if(hash===GHOST_CONFIG.admin.passwordHash){
+    _adminPwd=pwd;
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('mainApp').style.display='flex';
     initAdmin();
@@ -384,8 +393,8 @@ function logout(){
 // sans paiement, pour tester le contenu. Le mot de passe transite une seule
 // fois dans l'URL puis platform.html le retire immédiatement.
 function previewPlatform(){
-  const pwd=encodeURIComponent(GHOST_CONFIG.admin.password);
-  window.open('../platform.html?preview='+pwd,'_blank');
+  if(!_adminPwd){ alert('Reconnecte-toi pour lancer l\'aperçu.'); return; }
+  window.open('../platform.html?preview='+encodeURIComponent(_adminPwd),'_blank');
 }
 
 // ── MODULES DATA ──

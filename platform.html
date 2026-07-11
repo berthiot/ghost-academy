@@ -663,18 +663,20 @@ function addXP(amount,mod){
 // ── ACCESS CONTROL ──
 const FREE_PAGES=['home','intro','ai','skills'];
 // Mode aperçu admin : ouvre platform.html?preview=<mot_de_passe_admin> pour
-// débloquer tous les modules et tester le contenu sans payer. L'accès est
-// gardé en session (temporaire, effacé à la fermeture de l'onglet) et le
-// mot de passe est aussitôt retiré de l'URL.
-(function(){
+// débloquer tous les modules et tester le contenu sans payer. On compare
+// l'empreinte SHA-256 du paramètre au hash stocké dans la config, l'accès est
+// gardé en session (effacé à la fermeture de l'onglet), et le mot de passe est
+// aussitôt retiré de l'URL (rechargement propre).
+(async function(){
   try{
     const p=new URLSearchParams(location.search).get('preview');
-    const adminPwd=(typeof GHOST_CONFIG!=='undefined'&&GHOST_CONFIG.admin)?GHOST_CONFIG.admin.password:null;
-    if(p&&adminPwd&&p===adminPwd){
-      sessionStorage.setItem('ga_preview','1');
-      history.replaceState(null,'',location.pathname);
-    }
-  }catch(e){}
+    if(!p) return;
+    const stored=(typeof GHOST_CONFIG!=='undefined'&&GHOST_CONFIG.admin)?GHOST_CONFIG.admin.passwordHash:null;
+    const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(p));
+    const hash=Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    if(stored&&hash===stored) sessionStorage.setItem('ga_preview','1');
+    location.replace(location.pathname); // URL propre, sans le mot de passe
+  }catch(e){ try{location.replace(location.pathname);}catch(_){} }
 })();
 const isPreview=(()=>{try{return sessionStorage.getItem('ga_preview')==='1';}catch(e){return false;}})();
 const hasAccess=isPreview||((typeof checkAccess==='function')?checkAccess():false);

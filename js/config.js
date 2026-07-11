@@ -61,8 +61,12 @@ const GHOST_CONFIG = {
 
   // ── ADMIN ─────────────────────────────────
   admin: {
-    // Change ce mot de passe !
-    password: 'ghost2024',
+    // Empreinte SHA-256 du mot de passe admin (jamais le mot de passe en clair).
+    // Mot de passe actuel = "ghost2024" — CHANGE-LE !
+    // Pour générer une nouvelle empreinte, en terminal :
+    //   printf '%s' 'TON_NOUVEAU_MOT_DE_PASSE' | sha256sum
+    // puis colle le résultat ci-dessous.
+    passwordHash: '7ebc246d65879fc088a640720ace3ca5affcc38f68218ae11f6ea39f82c7a2b7',
     // Email pour recevoir les notifications de vente
     notifEmail: 'toi@email.com',
   },
