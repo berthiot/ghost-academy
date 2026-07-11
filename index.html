@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="GHOST//ACADEMY — Formez-vous à la cybersécurité offensive. Devenez un hacker d'élite grâce à des modules interactifs, des labs et une IA embarquée.">
+<title>GHOST//ACADEMY — Devenez un Hacker d'Élite</title>
+<link rel="stylesheet" href="css/ghost.css">
+<style>
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden; padding: 80px 0 60px;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,229,255,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px; letter-spacing: 4px; color: var(--cyan);
+  margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
+}
+.hero-eyebrow::before {
+  content: ''; width: 32px; height: 1px; background: var(--cyan); opacity: 0.5;
+}
+.hero-title { line-height: 1.05; margin-bottom: 8px; }
+.hero-title .accent { color: var(--red); }
+.hero-title .dim { color: var(--text-dim); }
+.hero-sub {
+  font-family: 'Orbitron', monospace; font-size: clamp(13px, 2vw, 18px);
+  color: var(--text-mid); letter-spacing: 2px; margin-bottom: 24px;
+}
+.hero-desc {
+  font-size: 16px; color: var(--text); max-width: 560px;
+  margin-bottom: 36px; line-height: 1.7;
+}
+.hero-cta { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 48px; }
+.hero-stats {
+  display: flex; gap: 32px; flex-wrap: wrap;
+  padding-top: 32px; border-top: 1px solid var(--border);
+}
+.stat-item {}
+.stat-num {
+  font-family: 'Orbitron', monospace; font-size: 28px; font-weight: 900;
+  color: var(--cyan); display: block; line-height: 1;
+}
+.stat-label {
+  font-family: 'Share Tech Mono', monospace; font-size: 10px;
+  letter-spacing: 2px; color: var(--text-dim); margin-top: 4px;
+}
+.hero-visual {
+  position: absolute; right: -60px; top: 50%;
+  transform: translateY(-50%);
+  width: 480px; opacity: 0.15; pointer-events: none;
+  font-family: 'Share Tech Mono', monospace; font-size: 11px;
+  color: var(--cyan); line-height: 1.6;
+}
+/* ── MODULES GRID ── */
+.module-card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 24px;
+  transition: all 0.25s; cursor: pointer; position: relative; overflow: hidden;
+}
+.module-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  transform: scaleX(0); transition: transform 0.3s;
+}
+.module-card:hover { border-color: var(--border2); transform: translateY(-4px); }
+.module-card:hover::before { transform: scaleX(1); }
+.module-card .card-icon { font-size: 28px; margin-bottom: 12px; }
+.module-card .card-tag {
+  font-family: 'Share Tech Mono', monospace; font-size: 9px;
+  letter-spacing: 2px; color: var(--text-dim); margin-bottom: 6px;
+}
+.module-card .card-title {
+  font-family: 'Orbitron', monospace; font-size: 15px;
+  color: var(--text-bright); margin-bottom: 8px;
+}
+.module-card .card-desc {
+  font-size: 13px; color: var(--text-mid); line-height: 1.6; margin-bottom: 16px;
+}
+.module-card .card-meta {
+  display: flex; gap: 12px; align-items: center;
+  font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-dim);
+}
+.module-card .lock-badge {
+  position: absolute; top: 16px; right: 16px;
+  font-size: 16px; opacity: 0.5;
+}
+/* ── PRICING ── */
+.pricing-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  align-items: start;
+}
+.pricing-card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 28px; position: relative; overflow: hidden;
+}
+.pricing-card.featured {
+  border-color: rgba(0,229,255,0.4);
+  box-shadow: 0 0 40px rgba(0,229,255,0.08);
+  transform: scale(1.04);
+}
+.pricing-card.featured::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--cyan), var(--purple));
+}
+.pricing-badge {
+  position: absolute; top: 16px; right: 16px;
+  font-family: 'Share Tech Mono', monospace; font-size: 9px;
+  letter-spacing: 1px; padding: 3px 8px; border-radius: 20px;
+  background: var(--cyan); color: var(--void); font-weight: 700;
+}
+.pricing-name {
+  font-family: 'Orbitron', monospace; font-size: 13px;
+  letter-spacing: 3px; color: var(--text-dim); margin-bottom: 12px;
+}
+.pricing-price {
+  display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px;
+}
+.pricing-amount {
+  font-family: 'Orbitron', monospace; font-size: 40px; font-weight: 900; color: var(--text-bright);
+}
+.pricing-currency { font-family: 'Orbitron', monospace; font-size: 18px; color: var(--text-dim); }
+.pricing-period { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-dim); }
+.pricing-features { list-style: none; margin: 20px 0 24px; display: flex; flex-direction: column; gap: 10px; }
+.pricing-features li {
+  font-size: 13px; color: var(--text);
+  display: flex; align-items: center; gap: 8px;
+}
+.pricing-features li::before { content: '✓'; color: var(--green); font-family: monospace; flex-shrink: 0; }
+/* ── TESTIMONIALS ── */
+.testimonial {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 24px;
+}
+.testimonial-text { font-size: 14px; color: var(--text); line-height: 1.7; margin-bottom: 16px; font-style: italic; }
+.testimonial-author { display: flex; align-items: center; gap: 12px; }
+.testimonial-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  display: flex; align-items: center; justify-content: center; font-size: 14px;
+}
+.testimonial-name { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--cyan); }
+.testimonial-role { font-size: 11px; color: var(--text-dim); }
+/* ── FAQ ── */
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-q {
+  width: 100%; background: none; border: none; cursor: pointer;
+  padding: 20px 0; font-size: 15px; font-family: 'Inter', sans-serif;
+  color: var(--text-bright); text-align: left; display: flex;
+  justify-content: space-between; align-items: center; gap: 16px;
+}
+.faq-q:hover { color: var(--cyan); }
+.faq-icon { font-size: 18px; color: var(--cyan); flex-shrink: 0; transition: transform 0.3s; }
+.faq-a { padding: 0 0 20px; font-size: 14px; color: var(--text-mid); line-height: 1.7; display: none; }
+.faq-item.open .faq-a { display: block; }
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border); padding: 40px 0;
+  background: var(--deep);
+}
+.footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+.footer-logo { font-family: 'Orbitron', monospace; font-weight: 900; font-size: 16px; color: var(--cyan); }
+.footer-logo span { color: var(--red); }
+.footer-links { display: flex; gap: 24px; }
+.footer-link { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-dim); text-decoration: none; letter-spacing: 1px; }
+.footer-link:hover { color: var(--cyan); }
+.footer-copy { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-dim); }
+/* ── SECTION HEADERS ── */
+.section-eyebrow {
+  font-family: 'Share Tech Mono', monospace; font-size: 10px;
+  letter-spacing: 3px; color: var(--cyan); display: flex;
+  align-items: center; gap: 10px; margin-bottom: 12px;
+}
+.section-eyebrow::before, .section-eyebrow::after {
+  content: '//'; color: var(--text-dim);
+}
+/* ── STRIPE MODAL ── */
+#payModal .modal { max-width: 440px; }
+#stripe-form { margin-top: 20px; }
+#card-element {
+  background: var(--deep); border: 1px solid var(--border2);
+  border-radius: var(--radius); padding: 14px 16px;
+}
+#card-errors { color: var(--red); font-size: 12px; margin-top: 8px; min-height: 18px; }
+@media (max-width: 768px) {
+  .pricing-grid { grid-template-columns: 1fr; }
+  .pricing-card.featured { transform: scale(1); }
+  .hero-visual { display: none; }
+  .hero-stats { gap: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">GHOST<span>//</span>ACADEMY</a>
+    <div class="nav-links">
+      <a href="#modules" class="nav-link">MODULES</a>
+      <a href="#pricing" class="nav-link">TARIFS</a>
+      <a href="#faq" class="nav-link">FAQ</a>
+      <a href="platform.html" class="btn btn-ghost btn-sm">ACCÉDER →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">CYBERSÉCURITÉ OFFENSIVE</div>
+    <h1 class="hero-title">
+      Devenez un<br>
+      <span class="accent">Hacker</span> d'Élite<span class="dim">.</span>
+    </h1>
+    <div class="hero-sub">RECON · EXPLOIT · PERSIST · WIN</div>
+    <p class="hero-desc">
+      La seule formation qui te prépare à gagner HackTheBox, les CTF et les programmes bug bounty — avec un terminal interactif, des labs réels et une IA mentor embarquée.
+    </p>
+    <div class="hero-cta">
+      <a href="#pricing" class="btn btn-primary btn-lg">COMMENCER MAINTENANT →</a>
+      <a href="#modules" class="btn btn-ghost btn-lg">VOIR LES MODULES</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item"><span class="stat-num">7+</span><div class="stat-label">MODULES ACTIFS</div></div>
+      <div class="stat-item"><span class="stat-num">50+</span><div class="stat-label">QUIZ INTERACTIFS</div></div>
+      <div class="stat-item"><span class="stat-num">100%</span><div class="stat-label">PRATIQUE CTF</div></div>
+      <div class="stat-item"><span class="stat-num">∞</span><div class="stat-label">GHOST AI</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES -->
+<section class="section" id="modules">
+  <div class="container">
+    <div class="section-eyebrow">PROGRAMME</div>
+    <h2 style="margin-bottom:8px;">7 modules. De zéro à expert.</h2>
+    <p style="color:var(--text-mid);margin-bottom:40px;max-width:560px;">Chaque module contient de la théorie, un terminal interactif, des défis et un quiz noté. Tu progresses à ton rythme.</p>
+    <div id="modulesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;"></div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section-sm" style="background:var(--deep);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px;">
+      <div>
+        <div style="font-size:28px;margin-bottom:12px;">💻</div>
+        <div style="font-family:'Orbitron',monospace;font-size:13px;color:var(--text-bright);margin-bottom:8px;">Terminal Interactif</div>
+        <div style="font-size:13px;color:var(--text-mid);">Exécute de vraies commandes dans un environnement simulé. Apprends en faisant, pas en lisant.</div>
+      </div>
+      <div>
+        <div style="font-size:28px;margin-bottom:12px;">🤖</div>
+        <div style="font-family:'Orbitron',monospace;font-size:13px;color:var(--text-bright);margin-bottom:8px;">Ghost AI Mentor</div>
+        <div style="font-size:13px;color:var(--text-mid);">Une IA spécialisée en cybersécurité disponible 24/7 pour répondre à toutes tes questions techniques.</div>
+      </div>
+      <div>
+        <div style="font-size:28px;margin-bottom:12px;">🎯</div>
+        <div style="font-family:'Orbitron',monospace;font-size:13px;color:var(--text-bright);margin-bottom:8px;">Quiz Adaptatif</div>
+        <div style="font-size:13px;color:var(--text-mid);">Des questions ciblées avec explications détaillées. Chaque erreur est une leçon. Tu progresses vite.</div>
+      </div>
+      <div>
+        <div style="font-size:28px;margin-bottom:12px;">📱</div>
+        <div style="font-family:'Orbitron',monospace;font-size:13px;color:var(--text-bright);margin-bottom:8px;">100% Mobile</div>
+        <div style="font-size:13px;color:var(--text-mid);">Optimisé iPhone & Android. Étudie dans le métro, à l'hôtel, n'importe où. Sans compromis sur le contenu.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing">
+  <div class="container">
+    <div class="section-eyebrow">TARIFS</div>
+    <h2 style="margin-bottom:8px;">Investis dans ton expertise.</h2>
+    <p style="color:var(--text-mid);margin-bottom:40px;">Accès immédiat après paiement. Annulation à tout moment.</p>
+    <div class="pricing-grid" id="pricingGrid"></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section-sm" style="background:var(--deep);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div class="section-eyebrow">RÉSULTATS</div>
+    <h2 style="margin-bottom:32px;">Ils ont progressé.</h2>
+    <div class="grid-3">
+      <div class="testimonial">
+        <div class="testimonial-text">"En 3 semaines j'ai résolu mes premiers challenges HTB. La structure des modules et le terminal simulé font vraiment la différence."</div>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">👤</div>
+          <div><div class="testimonial-name">@k3rn3l_panic</div><div class="testimonial-role">HackTheBox — Top 500</div></div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <div class="testimonial-text">"Ghost AI m'a débloqué sur des concepts de crypto que je comprenais pas depuis des mois. Disponible à 3h du matin, ça change tout."</div>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">👤</div>
+          <div><div class="testimonial-name">@r3v3rs3r</div><div class="testimonial-role">CTF Player — France</div></div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <div class="testimonial-text">"Je me suis formé entièrement sur mobile. Le design est magnifique et le contenu est du niveau des formations à 2000€. À ce prix c'est imbattable."</div>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">👤</div>
+          <div><div class="testimonial-name">@ghost_in_shell</div><div class="testimonial-role">Bug Bounty Hunter</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="container" style="max-width:700px;">
+    <div class="section-eyebrow">FAQ</div>
+    <h2 style="margin-bottom:32px;">Questions fréquentes.</h2>
+    <div id="faqList"></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">GHOST<span>//</span>ACADEMY</div>
+      <div class="footer-links">
+        <a href="#" class="footer-link">MENTIONS LÉGALES</a>
+        <a href="#" class="footer-link">CGV</a>
+        <a href="#" class="footer-link">CONTACT</a>
+        <a href="admin/index.html" class="footer-link">ADMIN</a>
+      </div>
+      <div class="footer-copy">© 2024 GHOST//ACADEMY — Tous droits réservés</div>
+    </div>
+  </div>
+</footer>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalPlanName">GHOST//ELITE</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="payAlert"></div>
+      <div style="margin-bottom:20px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);margin-bottom:4px;">TOTAL</div>
+        <div style="font-family:'Orbitron',monospace;font-size:32px;font-weight:900;color:var(--text-bright);" id="modalPrice">79€<span style="font-size:14px;color:var(--text-dim)">/mois</span></div>
+      </div>
+      <form id="stripe-form">
+        <div class="form-group">
+          <label class="form-label">EMAIL</label>
+          <input type="email" class="form-input" id="payEmail" placeholder="toi@email.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">CARTE BANCAIRE</label>
+          <div id="card-element"></div>
+          <div id="card-errors"></div>
+        </div>
+        <button type="submit" class="btn btn-primary w-full" style="justify-content:center;" id="payBtn">
+          🔒 PAYER ET ACCÉDER →
+        </button>
+        <div style="text-align:center;margin-top:12px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);">
+          Paiement sécurisé par Stripe · Annulation immédiate
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/stripe.js"></script>
+<script>
+// ── LOAD MODULES ──
+fetch('data/modules.json')
+  .then(r=>r.json())
+  .then(data=>{
+    const grid = document.getElementById('modulesGrid');
+    const colors = { '#00e5ff':'cyan', '#ff2d55':'red', '#ff9f0a':'orange', '#00ff88':'green', '#bf5af2':'purple' };
+    data.modules.forEach(m=>{
+      const colorKey = m.color || '#00e5ff';
+      const card = document.createElement('div');
+      card.className = 'module-card';
+      card.style.cssText = `--card-color:${colorKey}`;
+      card.innerHTML = `
+        ${m.locked ? '<span class="lock-badge">🔒</span>' : '<span class="lock-badge">🔓</span>'}
+        <div class="card-icon">${m.icon}</div>
+        <div class="card-tag">${m.tag}</div>
+        <div class="card-title">${m.title}</div>
+        <div class="card-desc">${m.description}</div>
+        <div class="card-meta">
+          <span>⏱ ${m.duration}</span>
+          <span>·</span>
+          <span>${m.level}</span>
+          <span>·</span>
+          <span>${m.lessons.length} leçons</span>
+        </div>
+      `;
+      card.style.setProperty('--accent', colorKey);
+      card.querySelector('::before');
+      card.style.cursor = 'pointer';
+      card.addEventListener('mouseenter', ()=>{ card.style.borderColor = colorKey+'44'; });
+      card.addEventListener('mouseleave', ()=>{ card.style.borderColor = ''; });
+      card.querySelector('.card-title').style.color = m.locked ? '' : colorKey;
+      if(!m.locked) card.onclick = ()=>{ window.location.href='platform.html?module='+m.id; };
+      else card.onclick = ()=>{ document.getElementById('pricing').scrollIntoView({behavior:'smooth'}); };
+      grid.appendChild(card);
+    });
+  }).catch(()=>{
+    document.getElementById('modulesGrid').innerHTML = '<p style="color:var(--text-dim)">Modules en cours de chargement...</p>';
+  });
+
+// ── LOAD PRICING ──
+const plans = GHOST_CONFIG.stripe.plans;
+const grid = document.getElementById('pricingGrid');
+plans.forEach(p=>{
+  const card = document.createElement('div');
+  card.className = 'pricing-card' + (p.highlight ? ' featured' : '');
+  card.innerHTML = `
+    ${p.badge ? `<div class="pricing-badge">${p.badge}</div>` : ''}
+    <div class="pricing-name">${p.name}</div>
+    <div class="pricing-price">
+      <span class="pricing-currency">€</span>
+      <span class="pricing-amount">${p.price}</span>
+    </div>
+    <div class="pricing-period" style="margin-bottom:4px;color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:11px;">/ ${p.period}</div>
+    <ul class="pricing-features">${p.features.map(f=>`<li>${f}</li>`).join('')}</ul>
+    <button class="btn ${p.highlight ? 'btn-primary' : 'btn-ghost'} w-full" style="justify-content:center;" onclick="openPayModal('${p.id}')">
+      CHOISIR ${p.name} →
+    </button>
+  `;
+  grid.appendChild(card);
+});
+
+// ── FAQ ──
+const faqs = [
+  { q:"Faut-il des connaissances préalables ?", a:"Non. Le module d'introduction est offert et accessible à tous. Les modules avancés s'appuient sur les précédents. Tu peux commencer sans aucune expérience en informatique." },
+  { q:"Est-ce légal d'apprendre le hacking ?", a:"Absolument. La cybersécurité offensive (ou ethical hacking) est une profession reconnue. Toutes les techniques enseignées ici sont appliquées dans un cadre légal — sur des environnements de test, des CTF et avec autorisation explicite. Les entreprises paient des pentesters pour tester leurs systèmes." },
+  { q:"Sur quelles plateformes puis-je m'entraîner ?", a:"HackTheBox, TryHackMe, PicoCTF, VulnHub, DVWA en local. On te guide vers les meilleures ressources gratuites pour pratiquer ce que tu apprends." },
+  { q:"Comment fonctionne l'accès après paiement ?", a:"L'accès est immédiat après paiement. Tu reçois un email de confirmation avec tes identifiants. Tous les modules de ton plan sont débloqués instantanément." },
+  { q:"Puis-je annuler mon abonnement ?", a:"Oui, à tout moment depuis ton espace ou par email. Aucune rétention, aucun frais. L'accès reste actif jusqu'à la fin de la période payée." },
+  { q:"Est-ce compatible mobile ?", a:"Totalement. La plateforme est conçue mobile-first et optimisée pour iPhone et Android. Terminal interactif, quiz, vidéos — tout fonctionne depuis ton téléphone." },
+];
+const faqList = document.getElementById('faqList');
+faqs.forEach((f,i)=>{
+  const item = document.createElement('div');
+  item.className = 'faq-item';
+  item.innerHTML = `
+    <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+      ${f.q} <span class="faq-icon">+</span>
+    </button>
+    <div class="faq-a">${f.a}</div>
+  `;
+  faqList.appendChild(item);
+});
+</script>
+</body>
+</html>

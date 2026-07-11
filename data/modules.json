@@ -1,0 +1,205 @@
+{
+  "modules": [
+    {
+      "id": "module-00",
+      "tag": "GRATUIT",
+      "title": "Introduction au Hacking Éthique",
+      "description": "Comprends les fondamentaux, le mindset et l'environnement d'un hacker. Module d'introduction offert à tous.",
+      "duration": "45min",
+      "level": "Débutant",
+      "locked": false,
+      "video": "",
+      "color": "#00e5ff",
+      "icon": "🎯",
+      "lessons": [
+        { "id": "l00-01", "title": "Qu'est-ce que le hacking éthique ?", "duration": "10min", "type": "text" },
+        { "id": "l00-02", "title": "Mindset & état d'esprit", "duration": "8min", "type": "text" },
+        { "id": "l00-03", "title": "Installer Kali Linux (VM)", "duration": "15min", "type": "text" },
+        { "id": "l00-04", "title": "Ressources et communautés", "duration": "5min", "type": "text" }
+      ],
+      "quiz": [
+        {
+          "q": "Qu'est-ce qui distingue un hacker éthique d'un hacker malveillant ?",
+          "opts": ["Les outils utilisés", "L'autorisation explicite de la cible", "Le niveau de compétence", "Le système d'exploitation"],
+          "correct": 1,
+          "explanation": "L'autorisation écrite est la ligne qui sépare le pentest légal de l'intrusion criminelle. Sans elle, même les meilleures intentions ne protègent pas."
+        },
+        {
+          "q": "Quel OS est le standard en cybersécurité offensive ?",
+          "opts": ["Windows 11", "macOS", "Kali Linux", "Ubuntu Desktop"],
+          "correct": 2,
+          "explanation": "Kali Linux embarque +600 outils de sécurité pré-installés. C'est la distribution de référence pour les pentesteurs et la compétition CTF."
+        }
+      ]
+    },
+    {
+      "id": "module-01",
+      "tag": "MODULE 01",
+      "title": "Reconnaissance & OSINT",
+      "description": "Maîtrise la collecte d'informations passive et active. Nmap, theHarvester, Shodan, Subfinder. La phase la plus critique.",
+      "duration": "2h30",
+      "level": "Débutant",
+      "locked": true,
+      "video": "",
+      "color": "#00e5ff",
+      "icon": "🔍",
+      "lessons": [
+        { "id": "l01-01", "title": "OSINT — sources et méthodologie", "duration": "20min", "type": "text" },
+        { "id": "l01-02", "title": "Nmap — scan complet", "duration": "25min", "type": "text" },
+        { "id": "l01-03", "title": "DNS Enumeration", "duration": "20min", "type": "text" },
+        { "id": "l01-04", "title": "Shodan & theHarvester", "duration": "20min", "type": "text" },
+        { "id": "l01-05", "title": "Subfinder + Amass", "duration": "15min", "type": "text" },
+        { "id": "l01-06", "title": "Lab : Recon complet d'une cible CTF", "duration": "30min", "type": "lab" }
+      ],
+      "quiz": [
+        {
+          "q": "Quel flag Nmap permet la détection de version des services ?",
+          "opts": ["-sS", "-sV", "-O", "-p-"],
+          "correct": 1,
+          "explanation": "-sV (version scan) interroge les services pour identifier leur version exacte. Essentiel pour trouver des CVE exploitables."
+        },
+        {
+          "q": "Shodan est utilisé pour trouver :",
+          "opts": ["Des sous-domaines", "Des appareils connectés exposés sur internet", "Des mots de passe", "Du code source"],
+          "correct": 1,
+          "explanation": "Shodan indexe les bannières de services internet. Parfait pour trouver caméras, serveurs, IoT mal configurés — sans toucher la cible."
+        },
+        {
+          "q": "La commande `dig axfr @ns1.target.com target.com` sert à :",
+          "opts": ["Scanner les ports", "Tenter un transfert de zone DNS", "Bruteforcer un login", "Capturer du trafic"],
+          "correct": 1,
+          "explanation": "AXFR (Zone Transfer) récupère toutes les entrées DNS d'un domaine. Mal configuré, il révèle toute l'infrastructure en une commande."
+        }
+      ]
+    },
+    {
+      "id": "module-02",
+      "tag": "MODULE 02",
+      "title": "Network Hacking",
+      "description": "ARP Spoofing, MITM, Wi-Fi cracking WPA2, sniffing de trafic. Prends le contrôle de l'infrastructure réseau.",
+      "duration": "3h00",
+      "level": "Intermédiaire",
+      "locked": true,
+      "video": "",
+      "color": "#00e5ff",
+      "icon": "🌐",
+      "lessons": [
+        { "id": "l02-01", "title": "Modèle OSI & protocoles clés", "duration": "20min", "type": "text" },
+        { "id": "l02-02", "title": "ARP Spoofing & MITM avec Bettercap", "duration": "30min", "type": "text" },
+        { "id": "l02-03", "title": "Wi-Fi Hacking WPA2", "duration": "35min", "type": "text" },
+        { "id": "l02-04", "title": "Sniffing & Wireshark", "duration": "25min", "type": "text" },
+        { "id": "l02-05", "title": "Lab : MITM complet en réseau local", "duration": "30min", "type": "lab" }
+      ],
+      "quiz": [
+        {
+          "q": "L'ARP Spoofing permet de :",
+          "opts": ["Scanner les ports ouverts", "Se placer entre deux machines pour intercepter le trafic", "Cracker un mot de passe Wi-Fi", "Exploiter une faille web"],
+          "correct": 1,
+          "explanation": "ARP Spoofing empoisonne le cache ARP des victimes pour rediriger leur trafic vers l'attaquant — base de toute attaque MITM."
+        },
+        {
+          "q": "Pour capturer un handshake WPA2, on utilise :",
+          "opts": ["Nmap", "SQLmap", "Airodump-ng + Aireplay-ng", "Metasploit"],
+          "correct": 2,
+          "explanation": "Airodump-ng capture le réseau, Aireplay-ng force la déauthentification du client pour provoquer un nouveau handshake WPA2."
+        }
+      ]
+    },
+    {
+      "id": "module-03",
+      "tag": "MODULE 03",
+      "title": "Web Exploitation",
+      "description": "SQLi, XSS, SSRF, LFI, XXE, RCE. Maîtrise le TOP 10 OWASP et va au-delà. Burp Suite comme outil central.",
+      "duration": "4h00",
+      "level": "Intermédiaire",
+      "locked": true,
+      "video": "",
+      "color": "#ff2d55",
+      "icon": "💉",
+      "lessons": [
+        { "id": "l03-01", "title": "OWASP Top 10 — Vue d'ensemble", "duration": "20min", "type": "text" },
+        { "id": "l03-02", "title": "SQL Injection — Manuel + SQLmap", "duration": "40min", "type": "text" },
+        { "id": "l03-03", "title": "XSS — Reflected, Stored, DOM", "duration": "30min", "type": "text" },
+        { "id": "l03-04", "title": "LFI / RFI / Path Traversal", "duration": "25min", "type": "text" },
+        { "id": "l03-05", "title": "SSRF & XXE", "duration": "25min", "type": "text" },
+        { "id": "l03-06", "title": "Burp Suite — Workflow complet", "duration": "30min", "type": "text" },
+        { "id": "l03-07", "title": "Lab : Exploiter DVWA de A à Z", "duration": "30min", "type": "lab" }
+      ],
+      "quiz": [
+        {
+          "q": "Le payload SQL `' OR 1=1-- -` sert à :",
+          "opts": ["Injecter du JavaScript", "Bypasser une authentification SQL", "Scanner les ports", "Capturer des cookies"],
+          "correct": 1,
+          "explanation": "Ce payload ferme la chaîne SQL, ajoute une condition toujours vraie et commente le reste — technique de base pour tester une SQLi."
+        },
+        {
+          "q": "La différence entre XSS Stored et Reflected ?",
+          "opts": ["Aucune", "Stored est persistant en BDD, Reflected dans l'URL", "Reflected est plus dangereux", "Stored ne vole pas les cookies"],
+          "correct": 1,
+          "explanation": "XSS Stored est sauvegardé en base et s'exécute pour chaque visiteur — bien plus dangereux que Reflected qui nécessite un clic sur un lien piégé."
+        }
+      ]
+    },
+    {
+      "id": "module-04",
+      "tag": "MODULE 04",
+      "title": "Post-Exploitation",
+      "description": "Élévation de privilèges Linux/Windows, pivoting, persistence, extraction de credentials. Tu as un foothold — maintenant escalade.",
+      "duration": "3h30",
+      "level": "Avancé",
+      "locked": true,
+      "video": "",
+      "color": "#ff9f0a",
+      "icon": "🔓",
+      "lessons": [
+        { "id": "l04-01", "title": "Linux Privilege Escalation", "duration": "40min", "type": "text" },
+        { "id": "l04-02", "title": "Windows Privesc & Mimikatz", "duration": "35min", "type": "text" },
+        { "id": "l04-03", "title": "Pass-the-Hash & Kerberoasting", "duration": "30min", "type": "text" },
+        { "id": "l04-04", "title": "Pivoting avec Chisel & Ligolo-ng", "duration": "25min", "type": "text" },
+        { "id": "l04-05", "title": "Persistence & Cleanup", "duration": "20min", "type": "text" },
+        { "id": "l04-06", "title": "Lab : Compromission complète d'un réseau AD", "duration": "40min", "type": "lab" }
+      ],
+      "quiz": []
+    },
+    {
+      "id": "module-05",
+      "tag": "MODULE 05",
+      "title": "Cryptographie Offensive",
+      "description": "Hash cracking, JWT attacks, padding oracle, stéganographie. La crypto est partout — apprends à la briser.",
+      "duration": "2h00",
+      "level": "Avancé",
+      "locked": true,
+      "video": "",
+      "color": "#00ff88",
+      "icon": "🔐",
+      "lessons": [
+        { "id": "l05-01", "title": "Types de hash & identification", "duration": "15min", "type": "text" },
+        { "id": "l05-02", "title": "Hashcat — Modes & règles", "duration": "30min", "type": "text" },
+        { "id": "l05-03", "title": "JWT Attacks", "duration": "25min", "type": "text" },
+        { "id": "l05-04", "title": "Padding Oracle & CBC attacks", "duration": "20min", "type": "text" },
+        { "id": "l05-05", "title": "Lab : CryptoHack challenges", "duration": "30min", "type": "lab" }
+      ],
+      "quiz": []
+    },
+    {
+      "id": "module-06",
+      "tag": "MODULE 06",
+      "title": "AI-Powered Hacking",
+      "description": "Utilise Ollama en local, automatise la recon avec des LLM, génère des exploits avec l'IA. La frontière du hacking moderne.",
+      "duration": "2h30",
+      "level": "Expert",
+      "locked": true,
+      "video": "",
+      "color": "#bf5af2",
+      "icon": "🤖",
+      "lessons": [
+        { "id": "l06-01", "title": "Installer Ollama & LLM locaux", "duration": "20min", "type": "text" },
+        { "id": "l06-02", "title": "IA pour automatiser la recon", "duration": "25min", "type": "text" },
+        { "id": "l06-03", "title": "Analyse de code vulnérable avec IA", "duration": "20min", "type": "text" },
+        { "id": "l06-04", "title": "Fabric — pipeline IA pour pentest", "duration": "20min", "type": "text" },
+        { "id": "l06-05", "title": "Lab : Recon automatisée end-to-end", "duration": "25min", "type": "lab" }
+      ],
+      "quiz": []
+    }
+  ]
+}

@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>GHOST//ACADEMY — Admin</title>
+<link rel="stylesheet" href="../css/ghost.css">
+<style>
+:root{--safe-top:env(safe-area-inset-top,44px);--safe-bot:env(safe-area-inset-bottom,34px);}
+html,body{height:100%;overflow:hidden;}
+.app{position:fixed;inset:0;display:flex;flex-direction:column;}
+/* LOGIN */
+#loginScreen{position:fixed;inset:0;background:var(--void);display:flex;align-items:center;justify-content:center;z-index:200;padding:24px;}
+.login-box{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:32px;width:100%;max-width:360px;}
+.login-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:16px;letter-spacing:3px;color:var(--cyan);text-align:center;margin-bottom:4px;}
+.login-logo span{color:var(--red);}
+.login-sub{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--text-dim);text-align:center;margin-bottom:28px;}
+/* TOPBAR */
+.topbar{padding-top:var(--safe-top);background:rgba(7,13,20,0.97);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);flex-shrink:0;z-index:100;}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 12px;}
+.top-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:14px;letter-spacing:2px;color:var(--cyan);}
+.top-logo span{color:var(--red);}
+.top-badge{font-family:'Share Tech Mono',monospace;font-size:9px;padding:3px 8px;border-radius:4px;background:var(--red-dim);border:1px solid var(--red);color:var(--red);}
+/* SCROLL */
+.scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 0 40px;}
+/* BOTTOM NAV */
+.bot-nav{position:fixed;bottom:0;left:0;right:0;padding-bottom:var(--safe-bot);background:rgba(7,13,20,0.97);border-top:1px solid var(--border);backdrop-filter:blur(20px);display:flex;padding-top:8px;z-index:100;overflow-x:auto;scrollbar-width:none;}
+.bot-nav::-webkit-scrollbar{display:none;}
+.nb{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 16px 4px;background:none;border:none;cursor:pointer;min-width:70px;}
+.nb-icon{font-size:20px;}
+.nb-lbl{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);white-space:nowrap;}
+.nb.active .nb-lbl{color:var(--cyan);}
+.nb.active .nb-icon{filter:drop-shadow(0 0 6px var(--cyan));}
+/* PAGES */
+.page{display:none;padding-bottom:100px;}
+.page.active{display:block;}
+/* SECTION HEADER */
+.sec-hdr{padding:16px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(0,229,255,.04) 0%,transparent 100%);}
+.sec-tag{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--cyan);margin-bottom:4px;}
+.sec-title{font-family:'Orbitron',monospace;font-weight:700;font-size:17px;color:var(--text-bright);}
+/* CARDS */
+.card{margin:12px 16px 0;background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.card-head{padding:11px 14px;border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan);background:rgba(0,229,255,.04);display:flex;align-items:center;justify-content:space-between;}
+.card-body{padding:14px;}
+/* MODULE ITEMS */
+.mod-item{padding:14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px;}
+.mod-item:last-child{border-bottom:none;}
+.mod-item-icon{font-size:22px;flex-shrink:0;}
+.mod-item-info{flex:1;min-width:0;}
+.mod-item-tag{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);margin-bottom:2px;}
+.mod-item-title{font-family:'Orbitron',monospace;font-size:13px;color:var(--text-bright);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mod-item-meta{font-size:11px;color:var(--text-dim);}
+.mod-item-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
+.btn-xs{padding:6px 10px;font-size:9px;border-radius:6px;cursor:pointer;border:none;font-family:'Share Tech Mono',monospace;letter-spacing:.5px;}
+.btn-edit{background:var(--cyan-dim);border:1px solid rgba(0,229,255,.3);color:var(--cyan);}
+.btn-del{background:var(--red-dim);border:1px solid rgba(255,45,85,.3);color:var(--red);}
+.btn-vis{background:var(--green-dim);border:1px solid rgba(0,255,136,.3);color:var(--green);}
+/* FORM */
+.form-group{margin-bottom:16px;}
+.form-label{display:block;margin-bottom:6px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--text-dim);}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--deep);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Inter',sans-serif;font-size:14px;color:var(--text-bright);outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(0,229,255,.1);}
+.form-textarea{resize:vertical;min-height:80px;font-size:13px;}
+.form-select option{background:var(--deep);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+/* QUIZ BUILDER */
+.quiz-item{background:var(--deep);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;position:relative;}
+.quiz-item-num{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);margin-bottom:8px;letter-spacing:1px;}
+.quiz-del{position:absolute;top:10px;right:10px;background:var(--red-dim);border:1px solid rgba(255,45,85,.3);color:var(--red);width:24px;height:24px;border-radius:4px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;}
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 16px;}
+.stat-box{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;}
+.stat-n{font-family:'Orbitron',monospace;font-size:22px;font-weight:700;margin-bottom:4px;}
+.stat-l{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);letter-spacing:1px;}
+/* GUIDE */
+.guide-step{margin:12px 16px 0;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.step-num{font-family:'Orbitron',monospace;font-size:11px;color:var(--cyan);margin-bottom:6px;letter-spacing:2px;}
+.step-title{font-family:'Orbitron',monospace;font-size:14px;color:var(--text-bright);margin-bottom:8px;}
+.step-desc{font-size:13px;color:var(--text-mid);line-height:1.6;}
+.step-code{background:#000;border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:0 6px 6px 0;padding:10px 12px;margin-top:10px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--green);line-height:1.6;overflow-x:auto;}
+/* EXPORT */
+.export-box{margin:12px 16px 0;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.export-title{font-family:'Orbitron',monospace;font-size:13px;color:var(--text-bright);margin-bottom:12px;}
+.export-json{background:#000;border:1px solid var(--border);border-radius:6px;padding:12px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);line-height:1.6;max-height:200px;overflow-y:auto;white-space:pre;word-break:break-all;}
+/* TOAST */
+.toast{position:fixed;bottom:calc(90px + var(--safe-bot));left:50%;transform:translateX(-50%);background:var(--panel);border:1px solid var(--green);border-radius:8px;padding:10px 18px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--green);z-index:999;opacity:0;transition:opacity .3s;white-space:nowrap;pointer-events:none;}
+.toast.show{opacity:1;}
+/* MODAL */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;width:100%;max-width:520px;overflow:hidden;}
+.modal-hdr{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-family:'Orbitron',monospace;font-size:14px;color:var(--cyan);}
+.modal-close{background:none;border:none;color:var(--text-dim);font-size:20px;cursor:pointer;}
+.modal-body{padding:20px;max-height:70vh;overflow-y:auto;}
+.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">GHOST<span>//</span>ACADEMY</div>
+    <div class="login-sub">// ADMIN ACCESS REQUIRED</div>
+    <div class="form-group">
+      <label class="form-label">MOT DE PASSE ADMIN</label>
+      <input type="password" class="form-input" id="loginPwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div id="loginErr" style="color:var(--red);font-family:'Share Tech Mono',monospace;font-size:11px;margin-bottom:12px;min-height:16px;"></div>
+    <button onclick="doLogin()" class="btn btn-primary w-full" style="justify-content:center;">ACCÉDER →</button>
+    <div style="text-align:center;margin-top:16px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);">Mot de passe défini dans js/config.js</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="mainApp" style="display:none;">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="top-logo">GHOST<span>//</span>ADMIN</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="top-badge">ADMIN</span>
+        <button onclick="logout()" style="background:none;border:none;color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:10px;cursor:pointer;">DÉCO →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCROLL -->
+  <div class="scroll-area" id="scrollArea">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dash">
+      <div class="sec-hdr"><div class="sec-tag">// TABLEAU DE BORD</div><div class="sec-title">VUE D'ENSEMBLE</div></div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="stat-n" id="s-modules" style="color:var(--cyan)">7</div><div class="stat-l">MODULES</div></div>
+        <div class="stat-box"><div class="stat-n" id="s-lessons" style="color:var(--green)">35</div><div class="stat-l">LEÇONS</div></div>
+        <div class="stat-box"><div class="stat-n" id="s-quiz" style="color:var(--purple)">20</div><div class="stat-l">QUIZ</div></div>
+        <div class="stat-box"><div class="stat-n" id="s-free" style="color:var(--orange)">1</div><div class="stat-l">GRATUIT</div></div>
+      </div>
+      <div class="card">
+        <div class="card-head">⚡ ACTIONS RAPIDES</div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
+          <button class="btn btn-primary w-full" style="justify-content:center;" onclick="document.querySelector('.nb[onclick*=modules]').click()">+ NOUVEAU MODULE</button>
+          <button class="btn btn-ghost w-full" style="justify-content:center;" onclick="document.querySelector('.nb[onclick*=guide]').click()">📖 GUIDE DÉPLOIEMENT</button>
+          <a href="../index.html" target="_blank" class="btn btn-ghost w-full" style="justify-content:center;">🌐 VOIR LANDING PAGE</a>
+          <a href="../platform.html" target="_blank" class="btn btn-ghost w-full" style="justify-content:center;">🎓 VOIR PLATEFORME</a>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <div class="card-head">💳 STRIPE — ÉTAPES DE CONFIG</div>
+        <div class="card-body" style="font-size:13px;line-height:1.8;color:var(--text-mid);">
+          <div>1. Crée un compte sur <strong style="color:var(--cyan)">dashboard.stripe.com</strong></div>
+          <div>2. Developers → API Keys → copie la <strong style="color:var(--cyan)">Publishable key</strong></div>
+          <div>3. Products → crée tes abonnements → copie les <strong style="color:var(--cyan)">price_id</strong></div>
+          <div>4. Colle dans <strong style="color:var(--green)">js/config.js</strong></div>
+          <div style="margin-top:10px;padding:10px;background:var(--red-dim);border-radius:6px;border:1px solid rgba(255,45,85,.3);font-size:12px;color:var(--red);">⚠️ GitHub Pages = front-end seulement. Le paiement réel nécessite un backend (Netlify Functions, Vercel, Supabase).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULES -->
+    <div class="page" id="page-modules">
+      <div class="sec-hdr" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div><div class="sec-tag">// GESTION</div><div class="sec-title">MODULES</div></div>
+        <button class="btn btn-primary btn-sm" onclick="openModModal()">+ NOUVEAU</button>
+      </div>
+      <div class="card">
+        <div class="card-head">MODULES ACTIFS <span id="modCount" style="color:var(--text-dim)">7</span></div>
+        <div id="modList"></div>
+      </div>
+    </div>
+
+    <!-- EXPORT -->
+    <div class="page" id="page-export">
+      <div class="sec-hdr"><div class="sec-tag">// DONNÉES</div><div class="sec-title">EXPORT / IMPORT</div></div>
+      <div class="export-box">
+        <div class="export-title">📤 Exporter modules.json</div>
+        <p style="font-size:13px;color:var(--text-mid);margin-bottom:12px;line-height:1.6;">Copie ce JSON → remplace le contenu de <code style="color:var(--cyan);font-family:'Share Tech Mono',monospace;font-size:11px;">data/modules.json</code> → push sur GitHub.</p>
+        <div class="export-json" id="exportJson">Chargement...</div>
+        <div style="display:flex;gap:10px;margin-top:12px;">
+          <button class="btn btn-primary" onclick="copyExport()">📋 COPIER JSON</button>
+          <button class="btn btn-ghost" onclick="downloadExport()">⬇️ TÉLÉCHARGER</button>
+        </div>
+      </div>
+      <div class="export-box" style="margin-top:12px;">
+        <div class="export-title">📥 Importer modules.json</div>
+        <p style="font-size:13px;color:var(--text-mid);margin-bottom:12px;">Colle ton JSON ici pour l'importer dans l'éditeur.</p>
+        <textarea class="form-textarea" id="importJson" placeholder='{"modules":[...]}' style="min-height:120px;font-family:Share Tech Mono,monospace;font-size:11px;"></textarea>
+        <button class="btn btn-red" style="margin-top:10px;" onclick="doImport()">⬆️ IMPORTER ET REMPLACER</button>
+      </div>
+    </div>
+
+    <!-- GUIDE -->
+    <div class="page" id="page-guide">
+      <div class="sec-hdr"><div class="sec-tag">// DOCUMENTATION</div><div class="sec-title">GUIDE DE DÉPLOIEMENT</div></div>
+
+      <div class="guide-step">
+        <div class="step-num">// ÉTAPE 01</div>
+        <div class="step-title">Fork le repo GitHub</div>
+        <div class="step-desc">Va sur GitHub, crée un nouveau repository <code style="color:var(--cyan);font-family:'Share Tech Mono',monospace;">ghost-academy</code>, et uploade tous les fichiers.</div>
+        <div class="step-code">git init
+git add .
+git commit -m "feat: ghost academy initial"
+git remote add origin https://github.com/TON_USER/ghost-academy.git
+git push -u origin main</div>
+      </div>
+
+      <div class="guide-step">
+        <div class="step-num">// ÉTAPE 02</div>
+        <div class="step-title">Activer GitHub Pages</div>
+        <div class="step-desc">Dans ton repo GitHub : <strong>Settings → Pages → Source → main branch → / (root)</strong>. Ton site sera live en 2 minutes sur :</div>
+        <div class="step-code">https://TON_USERNAME.github.io/ghost-academy/</div>
+      </div>
+
+      <div class="guide-step">
+        <div class="step-num">// ÉTAPE 03</div>
+        <div class="step-title">Configurer Stripe</div>
+        <div class="step-desc">Crée un compte stripe.com → copie ta clé publique → configure dans js/config.js</div>
+        <div class="step-code">// js/config.js
+stripe: {
+  publicKey: 'pk_live_TA_CLE_ICI',
+  plans: [{ priceId: 'price_ABC123', ... }]
+}</div>
+      </div>
+
+      <div class="guide-step">
+        <div class="step-num">// ÉTAPE 04</div>
+        <div class="step-title">Ajouter un module</div>
+        <div class="step-desc">Dans cet admin : <strong>Modules → + Nouveau</strong>. Remplis le formulaire. Puis <strong>Export → Copier JSON → remplace data/modules.json → push sur GitHub</strong>.</div>
+        <div class="step-code">git add data/modules.json
+git commit -m "feat: add module 08 - forensics"
+git push</div>
+      </div>
+
+      <div class="guide-step">
+        <div class="step-num">// ÉTAPE 05</div>
+        <div class="step-title">Paiement réel (backend requis)</div>
+        <div class="step-desc">GitHub Pages = statique. Pour encaisser vraiment, il te faut un backend. Options gratuites recommandées :</div>
+        <div class="step-code">Option 1: Netlify Functions (gratuit)
+→ netlify.com → déploie le même repo
+→ crée functions/checkout.js
+
+Option 2: Vercel Serverless (gratuit)
+→ vercel.com → import GitHub repo
+→ crée api/checkout.ts
+
+Option 3: Supabase Edge Functions
+→ supabase.com → Edge Functions
+→ authentification + BDD incluses</div>
+      </div>
+
+      <div class="guide-step">
+        <div class="step-num">// ÉTAPE 06</div>
+        <div class="step-title">Domaine personnalisé</div>
+        <div class="step-desc">Dans GitHub Pages Settings → Custom domain → tape ton domaine. Configure chez ton registrar :</div>
+        <div class="step-code">CNAME ghostacademy.io → TON_USERNAME.github.io
+# Ou via Netlify/Vercel (encore plus simple)</div>
+      </div>
+    </div>
+
+  </div><!-- end scroll -->
+
+  <!-- BOTTOM NAV -->
+  <div class="bot-nav">
+    <button class="nb active" onclick="goPage('dash',this)"><span class="nb-icon">📊</span><span class="nb-lbl">DASHBOARD</span></button>
+    <button class="nb" onclick="goPage('modules',this)"><span class="nb-icon">📚</span><span class="nb-lbl">MODULES</span></button>
+    <button class="nb" onclick="goPage('export',this);renderExport()"><span class="nb-icon">💾</span><span class="nb-lbl">EXPORT</span></button>
+    <button class="nb" onclick="goPage('guide',this)"><span class="nb-icon">📖</span><span class="nb-lbl">GUIDE</span></button>
+  </div>
+</div>
+
+<!-- MODULE MODAL -->
+<div class="modal-ov" id="modModal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title" id="modModalTitle">NOUVEAU MODULE</div>
+      <button class="modal-close" onclick="closeModModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editModId">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">TAG AFFICHÉ</label>
+          <input type="text" class="form-input" id="fTag" placeholder="MODULE 08">
+        </div>
+        <div class="form-group">
+          <label class="form-label">EMOJI ICÔNE</label>
+          <input type="text" class="form-input" id="fIcon" placeholder="🛡️" maxlength="2">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">TITRE DU MODULE</label>
+        <input type="text" class="form-input" id="fTitle" placeholder="Forensics & Investigation">
+      </div>
+      <div class="form-group">
+        <label class="form-label">DESCRIPTION</label>
+        <textarea class="form-textarea" id="fDesc" placeholder="Description du module..."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">DURÉE</label>
+          <input type="text" class="form-input" id="fDuration" placeholder="2h30">
+        </div>
+        <div class="form-group">
+          <label class="form-label">NIVEAU</label>
+          <select class="form-select" id="fLevel">
+            <option>Débutant</option><option>Intermédiaire</option><option>Avancé</option><option>Expert</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">COULEUR ACCENT</label>
+          <select class="form-select" id="fColor">
+            <option value="#00e5ff">Cyan</option><option value="#ff2d55">Rouge</option>
+            <option value="#ff9f0a">Orange</option><option value="#00ff88">Vert</option><option value="#bf5af2">Violet</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ACCÈS</label>
+          <select class="form-select" id="fLocked">
+            <option value="true">🔒 Payant</option><option value="false">🔓 Gratuit</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">URL VIDÉO (YouTube embed ou Vimeo)</label>
+        <input type="text" class="form-input" id="fVideo" placeholder="https://youtube.com/embed/VIDEO_ID">
+      </div>
+
+      <!-- LEÇONS -->
+      <div style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div class="form-label" style="margin-bottom:0;">LEÇONS</div>
+          <button class="btn-xs btn-edit" onclick="addLesson()">+ LEÇON</button>
+        </div>
+        <div id="lessonList"></div>
+      </div>
+
+      <!-- QUIZ -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div class="form-label" style="margin-bottom:0;">QUIZ</div>
+          <button class="btn-xs btn-edit" onclick="addQuiz()">+ QUESTION</button>
+        </div>
+        <div id="quizList"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModModal()">ANNULER</button>
+      <button class="btn btn-primary" onclick="saveModule()">💾 ENREGISTRER</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="../js/config.js"></script>
+<script>
+// ── AUTH ──
+function doLogin(){
+  const pwd=document.getElementById('loginPwd').value;
+  if(pwd===GHOST_CONFIG.admin.password){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('mainApp').style.display='flex';
+    initAdmin();
+  } else {
+    document.getElementById('loginErr').textContent='Mot de passe incorrect.';
+    setTimeout(()=>document.getElementById('loginErr').textContent='',2000);
+  }
+}
+document.getElementById('loginPwd').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+function logout(){
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('mainApp').style.display='none';
+  document.getElementById('loginPwd').value='';
+}
+
+// ── MODULES DATA ──
+let modules=[];
+function loadModules(){
+  return fetch('../data/modules.json')
+    .then(r=>r.json())
+    .then(d=>{modules=d.modules||[];})
+    .catch(()=>{
+      modules=JSON.parse(localStorage.getItem('ga_modules')||'[]');
+    });
+}
+function saveModulesLocal(){
+  localStorage.setItem('ga_modules',JSON.stringify(modules));
+}
+
+// ── INIT ──
+async function initAdmin(){
+  await loadModules();
+  renderModList();
+  updateStats();
+}
+
+// ── STATS ──
+function updateStats(){
+  document.getElementById('s-modules').textContent=modules.length;
+  document.getElementById('modCount').textContent=modules.length;
+  const totalLessons=modules.reduce((a,m)=>a+(m.lessons?.length||0),0);
+  document.getElementById('s-lessons').textContent=totalLessons;
+  const totalQuiz=modules.reduce((a,m)=>a+(m.quiz?.length||0),0);
+  document.getElementById('s-quiz').textContent=totalQuiz;
+  document.getElementById('s-free').textContent=modules.filter(m=>!m.locked).length;
+}
+
+// ── MODULE LIST ──
+function renderModList(){
+  const list=document.getElementById('modList');
+  if(!modules.length){list.innerHTML='<div style="padding:20px;text-align:center;color:var(--text-dim);font-family:Share Tech Mono,monospace;font-size:11px;">Aucun module. Crée le premier !</div>';return;}
+  list.innerHTML=modules.map((m,i)=>`
+    <div class="mod-item">
+      <div class="mod-item-icon">${m.icon||'📦'}</div>
+      <div class="mod-item-info">
+        <div class="mod-item-tag">${m.tag} · ${m.locked?'🔒 Payant':'🔓 Gratuit'}</div>
+        <div class="mod-item-title" style="color:${m.color||'#00e5ff'}">${m.title}</div>
+        <div class="mod-item-meta">${m.lessons?.length||0} leçons · ${m.duration} · ${m.level}</div>
+      </div>
+      <div class="mod-item-actions">
+        <button class="btn-xs btn-edit" onclick="editModule(${i})">✏️ EDIT</button>
+        <button class="btn-xs ${m.locked?'btn-vis':'btn-del'}" onclick="toggleLock(${i})">${m.locked?'🔓 UNLOCK':'🔒 LOCK'}</button>
+        <button class="btn-xs btn-del" onclick="deleteModule(${i})">🗑 DEL</button>
+      </div>
+    </div>
+  `).join('');
+  updateStats();
+}
+
+// ── MODULE MODAL ──
+let editIdx=-1;
+let tempLessons=[],tempQuiz=[];
+
+function openModModal(idx=-1){
+  editIdx=idx;
+  tempLessons=[];tempQuiz=[];
+  document.getElementById('modModalTitle').textContent=idx>=0?'MODIFIER MODULE':'NOUVEAU MODULE';
+  if(idx>=0){
+    const m=modules[idx];
+    document.getElementById('fTag').value=m.tag||'';
+    document.getElementById('fIcon').value=m.icon||'';
+    document.getElementById('fTitle').value=m.title||'';
+    document.getElementById('fDesc').value=m.description||'';
+    document.getElementById('fDuration').value=m.duration||'';
+    document.getElementById('fLevel').value=m.level||'Débutant';
+    document.getElementById('fColor').value=m.color||'#00e5ff';
+    document.getElementById('fLocked').value=String(m.locked!==false);
+    document.getElementById('fVideo').value=m.video||'';
+    tempLessons=[...(m.lessons||[])];
+    tempQuiz=[...(m.quiz||[])];
+  } else {
+    ['fTag','fIcon','fTitle','fDesc','fDuration','fVideo'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('fLevel').value='Débutant';
+    document.getElementById('fColor').value='#00e5ff';
+    document.getElementById('fLocked').value='true';
+  }
+  renderLessons();renderQuizItems();
+  document.getElementById('modModal').classList.add('open');
+}
+function closeModModal(){document.getElementById('modModal').classList.remove('open');}
+
+function renderLessons(){
+  const el=document.getElementById('lessonList');
+  el.innerHTML=tempLessons.map((l,i)=>`
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+      <input class="form-input" style="flex:2;" value="${l.title||''}" placeholder="Titre de la leçon" onchange="tempLessons[${i}].title=this.value">
+      <input class="form-input" style="flex:1;" value="${l.duration||''}" placeholder="20min" onchange="tempLessons[${i}].duration=this.value">
+      <button class="btn-xs btn-del" onclick="tempLessons.splice(${i},1);renderLessons()">✕</button>
+    </div>
+  `).join('')+'<div style="font-size:11px;color:var(--text-dim);font-family:Share Tech Mono,monospace;">'+(tempLessons.length?`${tempLessons.length} leçon(s)`:'')+' </div>';
+}
+
+function addLesson(){
+  tempLessons.push({id:'l-'+Date.now(),title:'',duration:'20min',type:'text'});
+  renderLessons();
+}
+
+function renderQuizItems(){
+  const el=document.getElementById('quizList');
+  el.innerHTML=tempQuiz.map((q,i)=>`
+    <div class="quiz-item">
+      <div class="quiz-item-num">QUESTION ${i+1}</div>
+      <button class="quiz-del" onclick="tempQuiz.splice(${i},1);renderQuizItems()">✕</button>
+      <div class="form-group">
+        <label class="form-label">QUESTION</label>
+        <input class="form-input" value="${q.q||''}" placeholder="La question..." onchange="tempQuiz[${i}].q=this.value">
+      </div>
+      ${['A','B','C','D'].map((l,j)=>`
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+          <span style="font-family:Share Tech Mono,monospace;font-size:11px;color:var(--text-dim);width:16px;flex-shrink:0;">${l}</span>
+          <input class="form-input" style="flex:1;" value="${q.opts?.[j]||''}" placeholder="Option ${l}" onchange="if(!tempQuiz[${i}].opts)tempQuiz[${i}].opts=[];tempQuiz[${i}].opts[${j}]=this.value">
+          <input type="radio" name="correct_${i}" value="${j}" ${q.correct===j?'checked':''} onchange="tempQuiz[${i}].correct=${j}" style="accent-color:var(--green);width:16px;height:16px;">
+        </div>
+      `).join('')}
+      <div class="form-group" style="margin-top:8px;margin-bottom:0;">
+        <label class="form-label">EXPLICATION (après réponse)</label>
+        <textarea class="form-textarea" style="min-height:60px;" placeholder="Explication détaillée..." onchange="tempQuiz[${i}].explanation=this.value">${q.explanation||''}</textarea>
+      </div>
+    </div>
+  `).join('');
+}
+
+function addQuiz(){
+  tempQuiz.push({q:'',opts:['','','',''],correct:0,explanation:''});
+  renderQuizItems();
+}
+
+function saveModule(){
+  const mod={
+    id: editIdx>=0?modules[editIdx].id:'module-'+Date.now(),
+    tag: document.getElementById('fTag').value||'MODULE',
+    icon: document.getElementById('fIcon').value||'📦',
+    title: document.getElementById('fTitle').value||'Sans titre',
+    description: document.getElementById('fDesc').value||'',
+    duration: document.getElementById('fDuration').value||'?',
+    level: document.getElementById('fLevel').value,
+    color: document.getElementById('fColor').value,
+    locked: document.getElementById('fLocked').value==='true',
+    video: document.getElementById('fVideo').value||'',
+    lessons: tempLessons,
+    quiz: tempQuiz,
+  };
+  if(editIdx>=0) modules[editIdx]=mod;
+  else modules.push(mod);
+  saveModulesLocal();
+  renderModList();
+  closeModModal();
+  showToast('✓ Module enregistré — pense à exporter !');
+}
+
+function editModule(i){openModModal(i);}
+function deleteModule(i){
+  if(confirm(`Supprimer "${modules[i].title}" ?`)){
+    modules.splice(i,1);saveModulesLocal();renderModList();showToast('Module supprimé');
+  }
+}
+function toggleLock(i){
+  modules[i].locked=!modules[i].locked;
+  saveModulesLocal();renderModList();
+  showToast(modules[i].locked?'🔒 Module verrouillé':'🔓 Module déverrouillé');
+}
+
+// ── EXPORT ──
+function renderExport(){
+  const json=JSON.stringify({modules},null,2);
+  document.getElementById('exportJson').textContent=json;
+}
+function copyExport(){
+  const json=JSON.stringify({modules},null,2);
+  navigator.clipboard.writeText(json).then(()=>showToast('✓ JSON copié !'));
+}
+function downloadExport(){
+  const json=JSON.stringify({modules},null,2);
+  const blob=new Blob([json],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='modules.json';a.click();
+  showToast('⬇️ Téléchargement lancé');
+}
+function doImport(){
+  try{
+    const data=JSON.parse(document.getElementById('importJson').value);
+    if(!data.modules)throw new Error('Format invalide');
+    modules=data.modules;saveModulesLocal();renderModList();renderExport();
+    showToast('✓ Import réussi — '+modules.length+' modules');
+    document.getElementById('importJson').value='';
+  }catch(e){showToast('✗ Erreur : '+e.message);}
+}
+
+// ── PAGE NAV ──
+function goPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('scrollArea').scrollTop=0;
+}
+
+// ── TOAST ──
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+</script>
+</body>
+</html>
